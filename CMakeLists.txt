@@ -33,15 +33,18 @@ include_directories(
 set(PROJECT_SOURCES
     src/mainwindow.cpp
     src/httpclient.cpp
+    src/gststreamthread.cpp
 )
 
 set(PROJECT_HEADERS
     inc/mainwindow.h
     inc/httpclient.h
+    inc/gststreamthread.h
 )
 
 set(PROJECT_UI
     ui/mainwindow.ui
+    ui/gststreamthread.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -74,6 +77,7 @@ target_link_libraries(smart_zone_client PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Network
     Qt${QT_VERSION_MAJOR}::Charts
+    ${GSTREAMER_LIBRARIES}
 )
 
 set_target_properties(smart_zone_client PROPERTIES
