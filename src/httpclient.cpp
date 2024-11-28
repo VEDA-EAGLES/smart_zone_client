@@ -118,7 +118,6 @@ void HttpClient::onGetAllCameraFinished(QNetworkReply* reply)
 
 void HttpClient::onGetAllPeopleCountDataFinished(QNetworkReply* reply)
 {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     if (reply->error() == QNetworkReply::NoError)
     {
         QJsonObject data = parseJson(reply);
@@ -144,7 +143,6 @@ void HttpClient::onGetAllPeopleCountDataFinished(QNetworkReply* reply)
 
 void HttpClient::onGetPeopleCountDataByTimeFinished(QNetworkReply* reply)
 {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     if (reply->error() == QNetworkReply::NoError)
     {
         QJsonObject data = parseJson(reply);
