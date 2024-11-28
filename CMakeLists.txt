@@ -9,8 +9,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Network)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Network Charts)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network Charts)
 
 set(CMAKE_AUTOUIC_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/ui")
 
@@ -20,10 +20,12 @@ include_directories(
 
 set(PROJECT_SOURCES
     src/mainwindow.cpp
+    src/httpclient.cpp
 )
 
 set(PROJECT_HEADERS
     inc/mainwindow.h
+    inc/httpclient.h
 )
 
 set(PROJECT_UI
@@ -59,6 +61,7 @@ endif()
 target_link_libraries(smart_zone_client PRIVATE 
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Network
+    Qt${QT_VERSION_MAJOR}::Charts
 )
 
 set_target_properties(smart_zone_client PROPERTIES
