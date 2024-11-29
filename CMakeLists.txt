@@ -34,16 +34,19 @@ set(PROJECT_SOURCES
     src/mainwindow.cpp
     src/httpclient.cpp
     src/gststreamthread.cpp
+    src/streamdisplay.cpp
 )
 
 set(PROJECT_HEADERS
     inc/mainwindow.h
     inc/httpclient.h
     inc/gststreamthread.h
+    inc/streamdisplay.h
 )
 
 set(PROJECT_UI
     ui/mainwindow.ui
+    ui/streamdisplay.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

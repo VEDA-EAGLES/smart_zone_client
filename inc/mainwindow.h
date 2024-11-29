@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 
+class StreamDisplay;
 namespace Ui
 {
     class MainWindow;
@@ -19,6 +20,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    StreamDisplay* focuesdDisplay;
 };
 
 #endif // MAINWINDOW_H
