@@ -2,22 +2,40 @@
 #define GSTSTREAMTHREAD_H
 
 #include <QWidget>
+#include <QThread>
 
-namespace Ui {
-    class GstStreamThread;
-} // namespace UI
+#include <gst/gst.h>
 
-class GstStreamThread : public QWidget
+typedef struct _CustomData {
+    GstElement* pipeline;
+    GstElement* source;
+    GstElement* depay;
+    GstElement* parse;
+    GstElement* decode;
+    GstElement* convert;
+    GstElement* sink;
+} CustomData;
+
+class GstStreamThread : public QThread
 {
     Q_OBJECT
 
 public:
-    GstStreamThread(QWidget *parent = nullptr);
+    GstStreamThread();
+    GstStreamThread(WId w_id, QString uri);
     ~GstStreamThread();
-    void gst_test();
+
+    void terminate();
+
+protected:
+    void run() override;
 
 private:
-    Ui::GstStreamThread *ui;
+    WId w_id;
+    QString uri;
+    bool terminated;
+
+    CustomData data;
 };
 
 #endif // GSTSTREAMTHREAD_H
