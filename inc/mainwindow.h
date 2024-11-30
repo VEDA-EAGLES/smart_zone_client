@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 class StreamDisplay;
+class AreaWidget;
 namespace Ui
 {
     class MainWindow;
@@ -21,7 +22,10 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    StreamDisplay* focuesdDisplay;
+    StreamDisplay* focusedDisplay;
+    QMap<StreamDisplay*, QPair<int, int>> displays;
+
+    AreaWidget* areaWidget;
 };
 
 #endif // MAINWINDOW_H

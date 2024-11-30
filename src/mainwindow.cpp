@@ -1,7 +1,11 @@
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
-
 #include "streamdisplay.h"
+#include "areawidget.h"
+
+#include "httpclient.h"
+
+#include <QGridLayout>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,20 +13,49 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    focuesdDisplay = NULL;
+    focusedDisplay = NULL;
     
+    // StreamDisplay
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
             StreamDisplay* streamDisplay = new StreamDisplay(ui->displayWidget);
+            displays[streamDisplay] = qMakePair(i, j);
             ui->gridLayout->addWidget(streamDisplay, i, j);
             connect(streamDisplay, &StreamDisplay::focusIn, this, [this](StreamDisplay* widget) {
-                focuesdDisplay = widget;
+                focusedDisplay = widget;
             });
         }
     }
+    
+
+    // AreaWidget
+    areaWidget = new AreaWidget(ui->areaInsertPage);
+    ui->areaInsertPage->layout()->addWidget(areaWidget);
+
+    connect(areaWidget, &AreaWidget::quit, this, [=]() {
+        QGridLayout* layout = qobject_cast<QGridLayout*>(ui->displayWidget->layout());
+        if (layout) {
+            layout->addWidget(focusedDisplay, displays[focusedDisplay].first, displays[focusedDisplay].second);
+            focusedDisplay->show();
+        }
+        ui->stackedWidget->setCurrentIndex(0);
+    });
+    connect(ui->insertAreaButton, &QPushButton::clicked, this, [=]() {
+        if (focusedDisplay) {
+            areaWidget->showDisplay(focusedDisplay);
+            ui->stackedWidget->setCurrentIndex(2);
+        }
+    });
+    connect(areaWidget, &AreaWidget::insertArea, this, [=](Area area) {
+        // httpclient로 area insert 요청
+    });
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    for (auto& display: displays.keys()) {
+        delete display;
+    }
+    delete areaWidget;
 }

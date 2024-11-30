@@ -67,14 +67,14 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
-              <widget class="QPushButton" name="pushButton_2">
+              <widget class="QPushButton" name="insertAreaButton">
                <property name="text">
                 <string>영역 추가</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="graphButton">
                <property name="text">
                 <string>통계 보기</string>
                </property>
@@ -108,8 +108,12 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="graphViewPage"/>
-      <widget class="QWidget" name="areaInsertPage"/>
+      <widget class="QWidget" name="graphViewPage">
+       <layout class="QVBoxLayout" name="verticalLayout_4"/>
+      </widget>
+      <widget class="QWidget" name="areaInsertPage">
+       <layout class="QVBoxLayout" name="verticalLayout_3"/>
+      </widget>
      </widget>
     </item>
    </layout>
