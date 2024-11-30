@@ -35,18 +35,25 @@ set(PROJECT_SOURCES
     src/httpclient.cpp
     src/gststreamthread.cpp
     src/streamdisplay.cpp
+    src/areawidget.cpp
+    src/drawwidget.cpp
 )
 
 set(PROJECT_HEADERS
+    inc/area.h inc/camera.h inc/peoplecount.h
     inc/mainwindow.h
     inc/httpclient.h
     inc/gststreamthread.h
     inc/streamdisplay.h
+    inc/areawidget.h
+    inc/drawwidget.h
 )
 
 set(PROJECT_UI
     ui/mainwindow.ui
     ui/streamdisplay.ui
+    ui/areawidget.ui
+    ui/drawwidget.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
