@@ -37,6 +37,9 @@ void StreamDisplay::playStream(QString uri)
 
 void StreamDisplay::stopStream()
 {
+    if (streamThread == NULL) {
+        return;
+    }
     streamThread->terminate();
     streamThread->wait();
     delete streamThread;

@@ -26,6 +26,8 @@ void GstStreamThread::run() {
     GstBus* bus;
     GstMessage* msg;
 
+    gst_init(NULL, NULL);
+
     data.pipeline = gst_pipeline_new("rtsp-player");
 
     data.source = gst_element_factory_make("rtspsrc", "source");
