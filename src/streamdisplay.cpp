@@ -20,9 +20,9 @@ StreamDisplay::~StreamDisplay()
 void StreamDisplay::setBorder()
 {
     if (focused) {
-        this->setStyleSheet("border: 2px solid red;");
+        this->setStyleSheet("QWidget {border: 2px solid red;} QLabel {border: none;}");
     } else {
-        this->setStyleSheet("border: 2px solid black;");
+        this->setStyleSheet("QWidget {border: 1px solid black;} QLabel {border: none;}");
     }
 }
 
