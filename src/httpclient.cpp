@@ -13,6 +13,10 @@ HttpClient::HttpClient(QObject *parent)
     getAllCameraManager = std::make_unique<QNetworkAccessManager>();
     getAllPeopleCountDataManager = std::make_unique<QNetworkAccessManager>();
     getPeopleCountDataByTimeManager = std::make_unique<QNetworkAccessManager>();
+    getAllPeopleMoveDataManager = std::make_unique<QNetworkAccessManager>();
+    getPeopleMoveDataByTimeManager = std::make_unique<QNetworkAccessManager>();
+    getAllPeopleStayDataManager = std::make_unique<QNetworkAccessManager>();
+    getPeopleStayDataByTimeManager = std::make_unique<QNetworkAccessManager>();
     insertAreaManager = std::make_unique<QNetworkAccessManager>();
     deleteAreaAllManager = std::make_unique<QNetworkAccessManager>();
     deleteAreaManager = std::make_unique<QNetworkAccessManager>();
@@ -20,6 +24,10 @@ HttpClient::HttpClient(QObject *parent)
     connect(getAllCameraManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onGetAllCameraFinished);
     connect(getAllPeopleCountDataManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onGetAllPeopleCountDataFinished);
     connect(getPeopleCountDataByTimeManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onGetPeopleCountDataByTimeFinished);
+    connect(getAllPeopleStayDataManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onGetAllPeopleStayDataFinished);
+    connect(getPeopleStayDataByTimeManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onGetPeopleStayDataByTimeFinished);
+    connect(getAllPeopleMoveDataManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onGetAllPeopleMoveDataFinished);
+    connect(getPeopleMoveDataByTimeManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onGetPeopleMoveDataByTimeFinished);
     connect(insertAreaManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onInsertAreaFinished);
     connect(deleteAreaAllManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onDeleteAreaAllFinished);
     connect(deleteAreaManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onDeleteAreaFinished);
@@ -59,6 +67,34 @@ void HttpClient::getPeopleCountDataByTime(Camera& camera, QString startTime, QSt
     QNetworkRequest request;
     request.setUrl(QUrl(tr(SERVER_URL) + tr("/peoplecnt/unit?camera_id=%1").arg(camera.id) + "&start=" + startTime + "&end=" + endTime));
     getPeopleCountDataByTimeManager->get(request);
+}
+
+void HttpClient::getAllPeopleStayData(Camera& camera)
+{
+    QNetworkRequest request;
+    request.setUrl(QUrl(tr(SERVER_URL) + tr("/peoplestay/all?camera_id=%1").arg(camera.id)));
+    getAllPeopleStayDataManager->get(request);
+}
+
+void HttpClient::getPeopleStayDataByTime(Camera& camera, QString startTime, QString endTime)
+{
+    QNetworkRequest request;
+    request.setUrl(QUrl(tr(SERVER_URL) + tr("/peoplestay/unit?camera_id=%1").arg(camera.id) + "&start=" + startTime + "&end=" + endTime));
+    getPeopleStayDataByTimeManager->get(request);
+}
+
+void HttpClient::getAllPeopleMoveData(Camera& camera)
+{
+    QNetworkRequest request;
+    request.setUrl(QUrl(tr(SERVER_URL) + tr("/peoplemove/all?camera_id=%1").arg(camera.id)));
+    getAllPeopleMoveDataManager->get(request);
+}
+
+void HttpClient::getPeopleMoveDataByTime(Camera& camera, QString startTime, QString endTime)
+{
+    QNetworkRequest request;
+    request.setUrl(QUrl(tr(SERVER_URL) + tr("/peoplemove/unit?camera_id=%1").arg(camera.id) + "&start=" + startTime + "&end=" + endTime));
+    getPeopleMoveDataByTimeManager->get(request);
 }
 
 void HttpClient::insertArea(Camera& camera, Area& area)
@@ -162,6 +198,108 @@ void HttpClient::onGetPeopleCountDataByTimeFinished(QNetworkReply* reply)
         }
 
         emit peopleCountDataByTimeFetched(peopleCountData);
+    }
+    reply->deleteLater();
+}
+
+void HttpClient::onGetAllPeopleStayDataFinished(QNetworkReply* reply)
+{
+    if (reply->error() == QNetworkReply::NoError)
+    {
+        QJsonObject data = parseJson(reply);
+        QJsonArray peopleStayDataArray = data["data"].toArray();
+
+        QList<PeopleStay> peopleStayData;
+        for (const QJsonValue& peopleStayDataValue : peopleStayDataArray)
+        {
+            QJsonObject peopleStayDataObject = peopleStayDataValue.toObject();
+            PeopleStay peopleStay;
+            peopleStay.id = peopleStayDataObject["data_id"].toInt();
+            peopleStay.areaId = peopleStayDataObject["area_id"].toInt();
+            peopleStay.stayTime = peopleStayDataObject["stay_time"].toInt();
+            peopleStay.startTime = peopleStayDataObject["start_time"].toInt();
+            peopleStay.endTime = peopleStayDataObject["end_time"].toInt();
+            peopleStayData.append(peopleStay);
+        }
+
+        emit allPeopleStayDataFetched(peopleStayData);
+    }
+    reply->deleteLater();
+}
+
+void HttpClient::onGetPeopleStayDataByTimeFinished(QNetworkReply* reply)
+{
+    if (reply->error() == QNetworkReply::NoError)
+    {
+        QJsonObject data = parseJson(reply);
+        QJsonArray peopleStayDataArray = data["data"].toArray();
+
+        QList<PeopleStay> peopleStayData;
+        for (const QJsonValue& peopleStayDataValue : peopleStayDataArray)
+        {
+            QJsonObject peopleStayDataObject = peopleStayDataValue.toObject();
+            PeopleStay peopleStay;
+            peopleStay.id = peopleStayDataObject["data_id"].toInt();
+            peopleStay.areaId = peopleStayDataObject["area_id"].toInt();
+            peopleStay.stayTime = peopleStayDataObject["stay_time"].toInt();
+            peopleStay.startTime = peopleStayDataObject["start_time"].toInt();
+            peopleStay.endTime = peopleStayDataObject["end_time"].toInt();
+            peopleStayData.append(peopleStay);
+        }
+
+        emit peopleStayDataByTimeFetched(peopleStayData);
+    }
+    reply->deleteLater();
+}
+
+void HttpClient::onGetAllPeopleMoveDataFinished(QNetworkReply* reply)
+{
+    if (reply->error() == QNetworkReply::NoError)
+    {
+        QJsonObject data = parseJson(reply);
+        QJsonArray peopleMoveDataArray = data["data"].toArray();
+
+        QList<PeopleMove> peopleMoveData;
+        for (const QJsonValue& peopleMoveDataValue : peopleMoveDataArray)
+        {
+            QJsonObject peopleMoveDataObject = peopleMoveDataValue.toObject();
+            PeopleMove peopleMove;
+            peopleMove.id = peopleMoveDataObject["data_id"].toInt();
+            peopleMove.fromAreaId = peopleMoveDataObject["from_area_id"].toInt();
+            peopleMove.toAreaId = peopleMoveDataObject["to_area_id"].toInt();
+            peopleMove.count = peopleMoveDataObject["count"].toInt();
+            peopleMove.startTime = peopleMoveDataObject["start_time"].toInt();
+            peopleMove.endTime = peopleMoveDataObject["end_time"].toInt();
+            peopleMoveData.append(peopleMove);
+        }
+
+        emit allPeopleMoveDataFetched(peopleMoveData);
+    }
+    reply->deleteLater();
+}
+
+void HttpClient::onGetPeopleMoveDataByTimeFinished(QNetworkReply* reply)
+{
+    if (reply->error() == QNetworkReply::NoError)
+    {
+        QJsonObject data = parseJson(reply);
+        QJsonArray peopleMoveDataArray = data["data"].toArray();
+
+        QList<PeopleMove> peopleMoveData;
+        for (const QJsonValue& peopleMoveDataValue : peopleMoveDataArray)
+        {
+            QJsonObject peopleMoveDataObject = peopleMoveDataValue.toObject();
+            PeopleMove peopleMove;
+            peopleMove.id = peopleMoveDataObject["data_id"].toInt();
+            peopleMove.fromAreaId = peopleMoveDataObject["from_area_id"].toInt();
+            peopleMove.toAreaId = peopleMoveDataObject["to_area_id"].toInt();
+            peopleMove.count = peopleMoveDataObject["count"].toInt();
+            peopleMove.startTime = peopleMoveDataObject["start_time"].toInt();
+            peopleMove.endTime = peopleMoveDataObject["end_time"].toInt();
+            peopleMoveData.append(peopleMove);
+        }
+
+        emit peopleMoveDataByTimeFetched(peopleMoveData);
     }
     reply->deleteLater();
 }
