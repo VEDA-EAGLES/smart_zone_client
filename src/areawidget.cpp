@@ -4,12 +4,15 @@
 #include "streamdisplay.h"
 
 #include <QStackedLayout>
+#include <QColorDialog>
 
 AreaWidget::AreaWidget(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::AreaWidget)
 {
     ui->setupUi(this);
+
+    color = Qt::red;
 
     drawWidget = new DrawWidget();
     stackedLayout = new QStackedLayout(ui->drawAreaWidget);
@@ -41,14 +44,22 @@ AreaWidget::AreaWidget(QWidget* parent)
         area.y = y;
         area.width = width;
         area.height = height;
+        area.color = color.name();
 
-        qDebug() << area.name << area.x << area.y << area.width << area.height;
+        qDebug() << area.name << area.x << area.y << area.width << area.height << area.color;
 
         emit insertArea(area);
     });
     connect(ui->backButton, &QPushButton::clicked, [=]() {
         drawWidget->clear();
+        ui->areaNameEdit->clear();
         emit quit();
+    });
+    connect(ui->colorButton, &QPushButton::clicked, [=]() {
+        color = QColorDialog::getColor(Qt::red, this);
+        if (color.isValid()) {
+            drawWidget->setPenColor(color);
+        }
     });
 }
 

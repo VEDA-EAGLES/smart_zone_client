@@ -38,6 +38,13 @@
        <widget class="QLineEdit" name="areaNameEdit"/>
       </item>
       <item>
+       <widget class="QPushButton" name="colorButton">
+        <property name="text">
+         <string>영역 색상 선택</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="deleteButton">
         <property name="text">
          <string>삭제</string>

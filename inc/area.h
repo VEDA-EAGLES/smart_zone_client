@@ -11,6 +11,7 @@ struct Area
     int y;
     int width;
     int height;
+    QString color;
 };
 
 #endif // AREA_H

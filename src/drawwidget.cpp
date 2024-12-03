@@ -11,7 +11,10 @@ DrawWidget::DrawWidget(QWidget* parent)
     , ui(new Ui::DrawWidget)
 {
     ui->setupUi(this);   
-
+    pen.setColor(Qt::red);
+    pen.setWidth(2);
+    pen.setStyle(Qt::SolidLine);
+    isDrawing = false;
 }
 
 DrawWidget::~DrawWidget()
@@ -33,10 +36,15 @@ QPoint DrawWidget::getRightBottom()
     return QPoint(x, y);
 }
 
+void DrawWidget::setPenColor(const QColor& color)
+{
+    pen.setColor(color);
+}
+
 void DrawWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
-    painter.setPen(QPen(Qt::red, 1, Qt::SolidLine));
+    painter.setPen(pen);
     painter.drawRect(QRect(startPoint, endPoint));
 }
 
@@ -96,5 +104,6 @@ void DrawWidget::clear()
     startPoint = QPoint(-1, -1);
     endPoint = QPoint(-1, -1);
     isDrawing = false;
+    pen.setColor(Qt::red);
     update();
 }

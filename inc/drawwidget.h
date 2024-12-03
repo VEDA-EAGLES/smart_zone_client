@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPoint>
+#include <QPen>
 
 namespace Ui
 {
@@ -18,6 +19,7 @@ public:
     ~DrawWidget();
     QPoint getLeftTop();
     QPoint getRightBottom();
+    void setPenColor(const QColor& color);
 
 protected:
     void paintEvent(QPaintEvent* event) override;
@@ -34,6 +36,7 @@ private:
     QPoint startPoint;
     QPoint endPoint;
     bool isDrawing;
+    QPen pen;
 
     QPoint clampPoint(const QPoint& point);
 

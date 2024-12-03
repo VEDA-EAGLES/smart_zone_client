@@ -2,6 +2,7 @@
 #define AREAWIDGET_H
 
 #include <QWidget>
+#include <QColor>
 #include "area.h"
 
 class DrawWidget;
@@ -9,7 +10,6 @@ class QStackedLayout;
 class StreamDisplay;
 class QGraphicsView;
 class QGraphicsScene;
-class QGraphicsProxyWidget;
 
 namespace Ui
 {
@@ -35,7 +35,8 @@ private:
 
     QGraphicsView* graphicsView;
     QGraphicsScene* graphicsScene;
-    QGraphicsProxyWidget* drawItem;
+
+    QColor color;
 };
 
 #endif // AREAWIDGET_H
