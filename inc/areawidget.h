@@ -7,6 +7,9 @@
 class DrawWidget;
 class QStackedLayout;
 class StreamDisplay;
+class QGraphicsView;
+class QGraphicsScene;
+class QGraphicsProxyWidget;
 
 namespace Ui
 {
@@ -29,6 +32,10 @@ private:
     Ui::AreaWidget* ui;
     DrawWidget* drawWidget;
     QStackedLayout* stackedLayout;
+
+    QGraphicsView* graphicsView;
+    QGraphicsScene* graphicsScene;
+    QGraphicsProxyWidget* drawItem;
 };
 
 #endif // AREAWIDGET_H

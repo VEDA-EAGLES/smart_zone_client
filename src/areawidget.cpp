@@ -11,11 +11,11 @@ AreaWidget::AreaWidget(QWidget* parent)
 {
     ui->setupUi(this);
 
-    drawWidget = new DrawWidget(ui->drawAreaWidget);
+    drawWidget = new DrawWidget();
     stackedLayout = new QStackedLayout(ui->drawAreaWidget);
     stackedLayout->setStackingMode(QStackedLayout::StackAll);
     stackedLayout->addWidget(drawWidget);
-    stackedLayout->setCurrentIndex(0);
+    ui->drawAreaWidget->setLayout(stackedLayout);	
 
     connect(ui->deleteButton, &QPushButton::clicked, drawWidget, &DrawWidget::clear);
     connect(ui->saveButton, &QPushButton::clicked, [=]() {
@@ -26,7 +26,6 @@ AreaWidget::AreaWidget(QWidget* parent)
         if (leftTop.x() == rightBottom.x() || leftTop.y() == rightBottom.y()) {
             return;
         }
-
         int cameraWidget = 640;
         int cameraHeight = 480;
         int drawWidgetWidth = drawWidget->width();
@@ -60,6 +59,6 @@ AreaWidget::~AreaWidget()
 
 void AreaWidget::showDisplay(StreamDisplay* display)
 {
-    stackedLayout->addWidget(display);
-    stackedLayout->setCurrentIndex(0);
+    stackedLayout->insertWidget(0, display);
+    drawWidget->raise();
 }

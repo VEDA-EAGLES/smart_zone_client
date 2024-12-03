@@ -24,8 +24,15 @@ MainWindow::MainWindow(QWidget *parent)
             connect(streamDisplay, &StreamDisplay::focusIn, this, [this](StreamDisplay* widget) {
                 focusedDisplay = widget;
             });
+
+            streamDisplay->playStream(tr("rtsp://210.99.70.120:1935/live/cctv00%1.stream").arg(i * 2 + j + 1));
+            // streamDisplay->playStream(tr("C:/Users/sm136/Downloads/test.mp4"));
         }
     }
+    ui->gridLayout->setColumnStretch(0, 1);
+    ui->gridLayout->setColumnStretch(1, 1);
+    ui->gridLayout->setRowStretch(0, 1);
+    ui->gridLayout->setRowStretch(1, 1);
     
 
     // AreaWidget
