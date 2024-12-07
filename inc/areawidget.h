@@ -37,6 +37,10 @@ private:
     QGraphicsScene* graphicsScene;
 
     QColor color;
+
+    void init();
+    void initConnect();
+    void clearWidget();
 };
 
 #endif // AREAWIDGET_H
