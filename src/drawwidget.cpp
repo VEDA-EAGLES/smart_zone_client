@@ -1,7 +1,6 @@
 #include "ui_drawwidget.h"
 #include "drawwidget.h"
 
-#include <QPushButton>
 #include <QPainter>
 #include <QMouseEvent>
 #include <QRect>
@@ -92,9 +91,9 @@ QPoint DrawWidget::clampPoint(const QPoint& point)
     int x = point.x();
     int y = point.y();
     x = qMax(0, x);
-    x = qMin(width() - 1, x);
+    x = qMin(width() - 2, x);
     y = qMax(0, y);
-    y = qMin(height() - 1, y);
+    y = qMin(height() - 2, y);
     return QPoint(x, y);
 }
 
