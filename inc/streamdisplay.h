@@ -4,8 +4,10 @@
 #include <QWidget>
 
 #include "gststreamthread.h"
+#include "camera.h"
 
 class QMediaPlayer;
+class QGraphicsView;
 class QGraphicsScene;
 class QGraphicsVideoItem;
 namespace Ui {
@@ -21,12 +23,16 @@ public:
     ~StreamDisplay();
     void setBorder();
     void playStream(QString uri);
+    void playStream(Camera* camera);
     void stopStream();
     void fitVideo();
+    void hideStatus();
+    void showStatus();
 
 signals:
-    void focusIn(StreamDisplay* widget);
+    void focusIn(StreamDisplay* display);
     void videoFrameChanged();
+    void insertArea(StreamDisplay* display);
 
 protected:
     void focusInEvent(QFocusEvent* event) override;
@@ -38,9 +44,13 @@ private:
     Ui::StreamDisplay *ui;
 
     bool focused;
+    bool playing;
     QMediaPlayer* player;
     QGraphicsScene* scene;
     QGraphicsVideoItem* videoItem;
+    Camera* camera;
+
+    void updateStatus();
 };
 
 #endif // STREAMDISPLAY_H

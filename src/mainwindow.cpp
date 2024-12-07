@@ -5,7 +5,10 @@
 
 #include "httpclient.h"
 
+#include "data.h"
+
 #include <QGridLayout>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -21,12 +24,24 @@ MainWindow::MainWindow(QWidget *parent)
             StreamDisplay* streamDisplay = new StreamDisplay(ui->displayWidget);
             displays[streamDisplay] = qMakePair(i, j);
             ui->gridLayout->addWidget(streamDisplay, i, j);
-            connect(streamDisplay, &StreamDisplay::focusIn, this, [this](StreamDisplay* widget) {
-                focusedDisplay = widget;
+            connect(streamDisplay, &StreamDisplay::focusIn, this, [this](StreamDisplay* display) {
+                focusedDisplay = display;
             });
-
-            streamDisplay->playStream(tr("rtsp://210.99.70.120:1935/live/cctv00%1.stream").arg(i * 2 + j + 1));
-            // streamDisplay->playStream(tr("C:/Users/sm136/Downloads/test.mp4"));
+            connect(streamDisplay, &StreamDisplay::insertArea, this, [=](StreamDisplay* display) {
+                focusedDisplay = display;
+                if (!focusedDisplay) {
+                    qDebug() << "No focused display";
+                    return;
+                }
+                focusedDisplay->hideStatus();
+                areaWidget->showDisplay(focusedDisplay);
+                ui->stackedWidget->setCurrentIndex(1);
+                ui->headWidget->hide();
+            });
+            
+            // streamDisplay->playStream(tr("rtsp://210.99.70.120:1935/live/cctv00%1.stream").arg(i * 2 + j + 1));
+            streamDisplay->playStream(tr("C:/Users/sm136/Downloads/test2.mp4"));
+            // streamDisplay->playStream(tr("rtsp://192.168.0.107:8082/test"));
         }
     }
     ui->gridLayout->setColumnStretch(0, 1);
@@ -34,7 +49,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->gridLayout->setRowStretch(0, 1);
     ui->gridLayout->setRowStretch(1, 1);
     
-
     // AreaWidget
     areaWidget = new AreaWidget(ui->areaInsertPage);
     ui->areaInsertPage->layout()->addWidget(areaWidget);
@@ -44,13 +58,9 @@ MainWindow::MainWindow(QWidget *parent)
         if (layout) {
             layout->addWidget(focusedDisplay, displays[focusedDisplay].first, displays[focusedDisplay].second);
             focusedDisplay->show();
-        }
-        ui->stackedWidget->setCurrentIndex(0);
-    });
-    connect(ui->insertAreaButton, &QPushButton::clicked, this, [=]() {
-        if (focusedDisplay) {
-            areaWidget->showDisplay(focusedDisplay);
-            ui->stackedWidget->setCurrentIndex(2);
+            focusedDisplay->showStatus();
+            ui->stackedWidget->setCurrentIndex(0);
+            ui->headWidget->show();
         }
     });
     connect(areaWidget, &AreaWidget::insertArea, this, [=](Area area) {
