@@ -8,8 +8,6 @@
 class DrawWidget;
 class QStackedLayout;
 class StreamDisplay;
-class QGraphicsView;
-class QGraphicsScene;
 
 namespace Ui
 {
@@ -32,9 +30,6 @@ private:
     Ui::AreaWidget* ui;
     DrawWidget* drawWidget;
     QStackedLayout* stackedLayout;
-
-    QGraphicsView* graphicsView;
-    QGraphicsScene* graphicsScene;
 
     QColor color;
 

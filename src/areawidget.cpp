@@ -20,7 +20,9 @@ AreaWidget::~AreaWidget()
 
 void AreaWidget::showDisplay(StreamDisplay* display)
 {
-    stackedLayout->insertWidget(0, display);
+    drawWidget = new DrawWidget();
+    stackedLayout->addWidget(display);
+    stackedLayout->addWidget(drawWidget);
     drawWidget->raise();
 }
 
@@ -29,7 +31,6 @@ void AreaWidget::init() {
     drawWidget = new DrawWidget();
     stackedLayout = new QStackedLayout(ui->drawAreaWidget);
     stackedLayout->setStackingMode(QStackedLayout::StackAll);
-    stackedLayout->addWidget(drawWidget);
     ui->drawAreaWidget->setLayout(stackedLayout);
     initConnect();
     clearWidget();
@@ -89,7 +90,7 @@ void AreaWidget::initConnect() {
 
 void AreaWidget::clearWidget()
 {
-    drawWidget->clear();
+    drawWidget->deleteLater();
     ui->areaNameEdit->clear();
     ui->colorPreview->setStyleSheet(QString("border: 1px solid black; background-color: red;"));
     color = Qt::red;
