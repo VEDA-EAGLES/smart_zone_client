@@ -26,6 +26,11 @@ private:
     QMap<StreamDisplay*, QPair<int, int>> displays;
 
     AreaWidget* areaWidget;
+
+    void init();
+    void initStreamDisplay();
+    void initAreaWidget();
+    void initConnect();
 };
 
 #endif // MAINWINDOW_H

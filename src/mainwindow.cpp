@@ -14,11 +14,30 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+    init();
+}
 
+MainWindow::~MainWindow()
+{
+    delete ui;
+    for (auto& display: displays.keys()) {
+        delete display;
+    }
+    delete areaWidget;
+}
+
+void MainWindow::init()
+{
+    ui->setupUi(this);
     focusedDisplay = NULL;
-    
-    // StreamDisplay
+
+    initStreamDisplay();
+    initAreaWidget();
+    initConnect();
+}
+
+void MainWindow::initStreamDisplay()
+{
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
             StreamDisplay* streamDisplay = new StreamDisplay(ui->displayWidget);
@@ -48,8 +67,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->gridLayout->setColumnStretch(1, 1);
     ui->gridLayout->setRowStretch(0, 1);
     ui->gridLayout->setRowStretch(1, 1);
-    
-    // AreaWidget
+}
+
+void MainWindow::initAreaWidget()
+{
     areaWidget = new AreaWidget(ui->areaInsertPage);
     ui->areaInsertPage->layout()->addWidget(areaWidget);
 
@@ -68,11 +89,13 @@ MainWindow::MainWindow(QWidget *parent)
     });
 }
 
-MainWindow::~MainWindow()
+void MainWindow::initConnect()
 {
-    delete ui;
-    for (auto& display: displays.keys()) {
-        delete display;
-    }
-    delete areaWidget;
+    connect(ui->deviceButton, &QPushButton::clicked, this, [=]() {
+        ui->stackedWidget_2->setCurrentIndex(0);
+        ui->headWidget->show();
+    });
+    connect(ui->graphButton, &QPushButton::clicked, this, [=]() {
+        ui->stackedWidget_2->setCurrentIndex(1);
+    });
 }
