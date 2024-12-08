@@ -34,6 +34,16 @@ StreamDisplay::StreamDisplay(QWidget *parent)
         emit insertArea(this);
     });
     connect(ui->stopStreamButton, &QPushButton::clicked, this, &StreamDisplay::stopStream);
+    connect(player, &QMediaPlayer::errorOccurred, this, [=](QMediaPlayer::Error error) {
+        qDebug() << "Error occurred: " << error;
+        stopStream();
+    });
+    connect(player, &QMediaPlayer::mediaStatusChanged, this, [=](QMediaPlayer::MediaStatus status) {
+        if (status == QMediaPlayer::EndOfMedia | status == QMediaPlayer::InvalidMedia) {
+            stopStream();
+        }
+
+    });
     updateStatus();
 }
 
