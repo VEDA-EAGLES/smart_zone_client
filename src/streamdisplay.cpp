@@ -100,7 +100,7 @@ void StreamDisplay::showStatus()
     ui->statusWidget->show();
 }
 
-void Camera* StreamDisplay::getCamera()
+Camera* StreamDisplay::getCamera()
 {
     return camera;
 }
