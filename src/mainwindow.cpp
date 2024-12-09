@@ -2,10 +2,9 @@
 #include "mainwindow.h"
 #include "streamdisplay.h"
 #include "areawidget.h"
+#include "graphdisplay.h"
 
 #include "httpclient.h"
-
-#include "data.h"
 
 #include <QGridLayout>
 
@@ -15,6 +14,15 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     init();
+
+    for (int i = 0; i < 10; i++) {
+        ui->listWidget->addItem(tr("Camera %1").arg(i + 1));
+        Camera camera;
+        camera.name = tr("Camera %1").arg(i + 1);
+        camera.ip = "192.168.0.1";
+        camera.id = 1;
+        cameras.append(camera);
+    }
 }
 
 MainWindow::~MainWindow()
@@ -33,6 +41,7 @@ void MainWindow::init()
 
     initStreamDisplay();
     initAreaWidget();
+    initGraphDisplay();
     initConnect();
 }
 
@@ -89,13 +98,31 @@ void MainWindow::initAreaWidget()
     });
 }
 
+void MainWindow::initGraphDisplay()
+{
+    graphDisplay = new GraphDisplay(ui->graphPage);
+    ui->graphPage->layout()->addWidget(graphDisplay);
+}
+
 void MainWindow::initConnect()
 {
     connect(ui->deviceButton, &QPushButton::clicked, this, [=]() {
         ui->stackedWidget_2->setCurrentIndex(0);
         ui->headWidget->show();
+        ui->deviceButton->setChecked(true);
+        ui->graphButton->setChecked(false);
     });
     connect(ui->graphButton, &QPushButton::clicked, this, [=]() {
         ui->stackedWidget_2->setCurrentIndex(1);
+        ui->graphButton->setChecked(true);
+        ui->deviceButton->setChecked(false);
+    });
+    connect(ui->listWidget, &QListWidget::itemClicked, this, [=](QListWidgetItem* item) {
+        for (auto& camera : cameras) {
+            if (camera.name == item->text()) {
+                graphDisplay->setCamera(camera);
+                break;
+            }
+        }
     });
 }

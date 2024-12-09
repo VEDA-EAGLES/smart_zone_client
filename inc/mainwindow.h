@@ -2,9 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "camera.h"
+#include "data.h"
 
 class StreamDisplay;
 class AreaWidget;
+class GraphDisplay;
 namespace Ui
 {
     class MainWindow;
@@ -27,9 +30,13 @@ private:
 
     AreaWidget* areaWidget;
 
+    GraphDisplay* graphDisplay;
+    QList<Camera> cameras;
+
     void init();
     void initStreamDisplay();
     void initAreaWidget();
+    void initGraphDisplay();
     void initConnect();
 };
 
