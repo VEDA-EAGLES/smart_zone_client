@@ -357,7 +357,25 @@ void HttpClient::onGetAllAreaByCameraFinished(QNetworkReply* reply) {
 void HttpClient::onInsertAreaFinished(QNetworkReply* reply)
 {
     qDebug() << "영역 추가 결과 :" << reply->error();
-    emit areaInserted();
+    if (reply->error() == QNetworkReply::NoError)
+    {
+        QJsonObject data = parseJson(reply);
+        switch (data["status"].toInt())
+        {
+        case 200:
+            emit areaInserted();
+            break;
+        case -1:
+            emit areaInsertFailedByDuplicateName();
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
+        emit areaInsertFailed();
+    }
     reply->deleteLater();
 }
 

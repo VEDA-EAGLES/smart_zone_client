@@ -39,6 +39,8 @@ signals:
     void peopleMoveDataByTimeFetched(QList<PeopleMove> peopleMoveData);
     void allAreaByCameraFetched(QList<Area> areas);
     void areaInserted();
+    void areaInsertFailed();
+    void areaInsertFailedByDuplicateName();
     void areaAllDeleted();
     void areaDeleted();
 
