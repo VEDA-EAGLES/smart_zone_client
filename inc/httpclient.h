@@ -24,6 +24,7 @@ public:
     void getPeopleStayDataByTime(Camera& camera, QString startTime, QString endTime);
     void getAllPeopleMoveData(Camera& camera);
     void getPeopleMoveDataByTime(Camera& camera, QString startTime, QString endTime);
+    void getAllAreaByCamera(Camera& camera);
     void insertArea(Camera& camera, Area& area);
     void deleteAreaAll(Camera& camera);
     void deleteArea(Camera& camera, Area& area);
@@ -36,6 +37,7 @@ signals:
     void peopleStayDataByTimeFetched(QList<PeopleStay> peopleStayData);
     void allPeopleMoveDataFetched(QList<PeopleMove> peopleMoveData);
     void peopleMoveDataByTimeFetched(QList<PeopleMove> peopleMoveData);
+    void allAreaByCameraFetched(QList<Area> areas);
     void areaInserted();
     void areaAllDeleted();
     void areaDeleted();
@@ -48,6 +50,7 @@ private slots:
     void onGetPeopleStayDataByTimeFinished(QNetworkReply* reply);
     void onGetAllPeopleMoveDataFinished(QNetworkReply* reply);
     void onGetPeopleMoveDataByTimeFinished(QNetworkReply* reply);
+    void onGetAllAreaByCameraFinished(QNetworkReply* reply);
     void onInsertAreaFinished(QNetworkReply* reply);
     void onDeleteAreaAllFinished(QNetworkReply* reply);
     void onDeleteAreaFinished(QNetworkReply* reply);
@@ -65,6 +68,7 @@ private:
     std::unique_ptr<QNetworkAccessManager> getPeopleStayDataByTimeManager;
     std::unique_ptr<QNetworkAccessManager> getAllPeopleMoveDataManager;
     std::unique_ptr<QNetworkAccessManager> getPeopleMoveDataByTimeManager;
+    std::unique_ptr<QNetworkAccessManager> getAllAreaByCameraManager;
     std::unique_ptr<QNetworkAccessManager> insertAreaManager;
     std::unique_ptr<QNetworkAccessManager> deleteAreaAllManager;
     std::unique_ptr<QNetworkAccessManager> deleteAreaManager;

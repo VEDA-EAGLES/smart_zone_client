@@ -17,6 +17,7 @@ HttpClient::HttpClient(QObject *parent)
     getPeopleMoveDataByTimeManager = std::make_unique<QNetworkAccessManager>();
     getAllPeopleStayDataManager = std::make_unique<QNetworkAccessManager>();
     getPeopleStayDataByTimeManager = std::make_unique<QNetworkAccessManager>();
+    getAllAreaByCameraManager = std::make_unique<QNetworkAccessManager>();
     insertAreaManager = std::make_unique<QNetworkAccessManager>();
     deleteAreaAllManager = std::make_unique<QNetworkAccessManager>();
     deleteAreaManager = std::make_unique<QNetworkAccessManager>();
@@ -28,6 +29,7 @@ HttpClient::HttpClient(QObject *parent)
     connect(getPeopleStayDataByTimeManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onGetPeopleStayDataByTimeFinished);
     connect(getAllPeopleMoveDataManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onGetAllPeopleMoveDataFinished);
     connect(getPeopleMoveDataByTimeManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onGetPeopleMoveDataByTimeFinished);
+    connect(getAllAreaByCameraManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onGetAllAreaByCameraFinished);
     connect(insertAreaManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onInsertAreaFinished);
     connect(deleteAreaAllManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onDeleteAreaAllFinished);
     connect(deleteAreaManager.get(), &QNetworkAccessManager::finished, this, &HttpClient::onDeleteAreaFinished);
@@ -102,6 +104,14 @@ void HttpClient::getPeopleMoveDataByTime(Camera& camera, QString startTime, QStr
     QNetworkRequest request;
     request.setUrl(QUrl(tr(SERVER_URL) + tr("/peoplemove/unit?camera_id=%1").arg(camera.id) + "&start=" + startTime + "&end=" + endTime));
     getPeopleMoveDataByTimeManager->get(request);
+}
+
+void HttpClient::getAllAreaByCamera(Camera& camera)
+{
+    qDebug() << "네트워크 요청 : 모든 영역 가져오기 by 카메라";
+    QNetworkRequest request;
+    request.setUrl(QUrl(tr(SERVER_URL) + tr("/area/all?camera_id=%1").arg(camera.id)));
+    getAllAreaByCameraManager->get(request);
 }
 
 void HttpClient::insertArea(Camera& camera, Area& area)
@@ -317,6 +327,29 @@ void HttpClient::onGetPeopleMoveDataByTimeFinished(QNetworkReply* reply)
         }
 
         emit peopleMoveDataByTimeFetched(peopleMoveData);
+    }
+    reply->deleteLater();
+}
+
+void HttpClient::onGetAllAreaByCameraFinished(QNetworkReply* reply) {
+    qDebug() << "모든 영역 가져오기 결과 :" << reply->error();
+    if (reply->error() == QNetworkReply::NoError)
+    {
+        QJsonObject data = parseJson(reply);
+        QJsonArray areasArray = data["areas"].toArray();
+
+        QList<Area> areas;
+        for (const QJsonValue& areaValue : areasArray)
+        {
+            QJsonObject areaObject = areaValue.toObject();
+            Area area;
+            area.id = areaObject["area_id"].toInt();
+            area.name = areaObject["area_name"].toString();
+            area.color = areaObject["color"].toString();
+            areas.append(area);
+        }
+
+        emit allAreaByCameraFetched(areas);
     }
     reply->deleteLater();
 }
