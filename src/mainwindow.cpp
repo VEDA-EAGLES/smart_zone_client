@@ -93,9 +93,6 @@ void MainWindow::initAreaWidget()
             ui->headWidget->show();
         }
     });
-    connect(areaWidget, &AreaWidget::insertArea, this, [=](Area area) {
-        // httpclient로 area insert 요청
-    });
 }
 
 void MainWindow::initGraphDisplay()
