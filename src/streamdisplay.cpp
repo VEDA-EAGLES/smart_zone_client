@@ -100,6 +100,11 @@ void StreamDisplay::showStatus()
     ui->statusWidget->show();
 }
 
+void Camera* StreamDisplay::getCamera()
+{
+    return camera;
+}
+
 void StreamDisplay::focusInEvent(QFocusEvent* event)
 {
     focused = true;

@@ -28,6 +28,7 @@ public:
     void fitVideo();
     void hideStatus();
     void showStatus();
+    Camera* getCamera();
 
 signals:
     void focusIn(StreamDisplay* display);
