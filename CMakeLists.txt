@@ -37,16 +37,18 @@ set(PROJECT_SOURCES
     src/streamdisplay.cpp
     src/areawidget.cpp
     src/drawwidget.cpp
+    src/graphdisplay.cpp
 )
 
 set(PROJECT_HEADERS
-    inc/area.h inc/camera.h inc/peoplecount.h
+    inc/area.h inc/camera.h inc/data.h
     inc/mainwindow.h
     inc/httpclient.h
     inc/gststreamthread.h
     inc/streamdisplay.h
     inc/areawidget.h
     inc/drawwidget.h
+    inc/graphdisplay.h
 )
 
 set(PROJECT_UI
@@ -54,6 +56,7 @@ set(PROJECT_UI
     ui/streamdisplay.ui
     ui/areawidget.ui
     ui/drawwidget.ui
+    ui/graphdisplay.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
