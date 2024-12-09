@@ -30,6 +30,7 @@ private:
     Ui::AreaWidget* ui;
     DrawWidget* drawWidget;
     QStackedLayout* stackedLayout;
+    StreamDisplay* focusedDisplay;
 
     QColor color;
 

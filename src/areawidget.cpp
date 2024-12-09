@@ -2,10 +2,11 @@
 #include "areawidget.h"
 #include "drawwidget.h"
 #include "streamdisplay.h"
+#include "httpclient.h"
 
 #include <QStackedLayout>
 #include <QColorDialog>
-
+#include <QMessageBox>
 AreaWidget::AreaWidget(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::AreaWidget)
@@ -24,6 +25,7 @@ void AreaWidget::showDisplay(StreamDisplay* display)
     stackedLayout->addWidget(display);
     stackedLayout->addWidget(drawWidget);
     drawWidget->raise();
+    focusedDisplay = display;
 }
 
 void AreaWidget::init() {
@@ -32,6 +34,7 @@ void AreaWidget::init() {
     stackedLayout = new QStackedLayout(ui->drawAreaWidget);
     stackedLayout->setStackingMode(QStackedLayout::StackAll);
     ui->drawAreaWidget->setLayout(stackedLayout);
+    focusedDisplay = nullptr;
     initConnect();
     clearWidget();
 }
@@ -69,9 +72,9 @@ void AreaWidget::initConnect() {
 
         qDebug() << area.name << area.x << area.y << area.width << area.height << area.color;
 
-        emit insertArea(area);
-        clearWidget();
-        emit quit();
+        HTTPCLIENT->insertArea(*(focusedDisplay->getCamera()), area);
+        ui->saveButton->setEnabled(false);
+        ui->backButton->setEnabled(false);
     });
     connect(ui->backButton, &QPushButton::clicked, [=]() {
         clearWidget();
@@ -86,6 +89,23 @@ void AreaWidget::initConnect() {
         drawWidget->setPenColor(color);
         ui->colorPreview->setStyleSheet(QString("border: 1px solid black; background-color: %1;").arg(color.name()));
     });
+    connect(HTTPCLIENT, &HttpClient::areaInserted, this, [=]() {
+        clearWidget();
+        emit quit();
+        
+        ui->saveButton->setEnabled(true);
+        ui->backButton->setEnabled(true);
+    });
+    connect(HTTPCLIENT, &HttpClient::areaInsertFailedByDuplicateName, this, [=]() {
+        // alert error
+        QMessageBox msg;
+        msg.setText("이미 존재하는 영역 이름입니다.");
+        msg.exec();
+        ui->areaNameEdit->setFocus();
+        
+        ui->saveButton->setEnabled(true);
+        ui->backButton->setEnabled(true);
+    });
 }
 
 void AreaWidget::clearWidget()
@@ -94,4 +114,5 @@ void AreaWidget::clearWidget()
     ui->areaNameEdit->clear();
     ui->colorPreview->setStyleSheet(QString("border: 1px solid black; background-color: red;"));
     color = Qt::red;
+    focusedDisplay = nullptr;
 }
