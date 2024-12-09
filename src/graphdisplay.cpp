@@ -79,10 +79,7 @@ void GraphDisplay::initConnect()
         ui->peoplemoveButton->setChecked(true);
         ui->peoplecountButton->setChecked(false);
         ui->peoplestayButton->setChecked(false);
-        QChartView* chartView = new QChartView(this);
-        ui->chartWidget->layout()->addWidget(chartView);
-        QChart* chart = new QChart();
-        chartView->setChart(chart);
+        ui->chartWidget->layout()->addWidget(createPeopleMoveChart());
     });
 }
 
@@ -291,11 +288,30 @@ QChart* GraphDisplay::createPeopleStayChart()
     return chart;
 }
 
-QChart* GraphDisplay::createPeopleMoveChart()
+SankeyDiagram* GraphDisplay::createPeopleMoveChart()
 {
-    QChart* chart = new QChart();
+    SankeyDiagram* sankeyDiagram = new SankeyDiagram();
+    sankeyDiagram->addNode("Source A", 40.0, QColor(200, 100, 100), 0);
+    sankeyDiagram->addNode("Source B", 20.0, QColor(100, 200, 100), 0);
+    sankeyDiagram->addNode("Target 1", 25.0, QColor(100, 100, 200), 1);
+    sankeyDiagram->addNode("Target 2", 20.0, QColor(200, 200, 100), 1);
+    sankeyDiagram->addNode("Target 3", 25.0, QColor(200, 100, 200), 1);
+    sankeyDiagram->addNode("qwer", 60, QColor(100,100,100), 2);
+    sankeyDiagram->addNode("지훈", 50, QColor(200, 100, 50), 2);
+
+    sankeyDiagram->addLink("Source A", "Target 1", 20.0);
+    sankeyDiagram->addLink("Source A", "Target 2", 10.0);
+    sankeyDiagram->addLink("Source B", "Target 2", 15.0);
+    sankeyDiagram->addLink("Source B", "Target 3", 15.0);
+    sankeyDiagram->addLink("Source A", "Target 3", 5.0);
+    sankeyDiagram->addLink("Target 3", "qwer", 25.0);
+    sankeyDiagram->addLink("Target 2", "지훈", 10);
+    sankeyDiagram->addLink("Target 1", "지훈", 40);
     
-    return chart;
+    sankeyDiagram->drawDiagram();
+
+
+    return sankeyDiagram;
 }
 
 // slots

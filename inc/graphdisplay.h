@@ -5,6 +5,7 @@
 
 #include "data.h"
 #include "camera.h"
+#include "sankeydiagram.h"
 
 class QChart;
 
@@ -34,7 +35,7 @@ private:
     void clearChart();
     QChart* createPeopleCountChart();
     QChart* createPeopleStayChart();
-    QChart* createPeopleMoveChart();
+    SankeyDiagram* createPeopleMoveChart();
 
 public slots:
     void setCamera(Camera& camera);

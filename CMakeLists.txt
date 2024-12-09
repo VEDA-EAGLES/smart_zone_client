@@ -38,6 +38,7 @@ set(PROJECT_SOURCES
     src/areawidget.cpp
     src/drawwidget.cpp
     src/graphdisplay.cpp
+    src/sankeydiagram.cpp
 )
 
 set(PROJECT_HEADERS
@@ -49,6 +50,7 @@ set(PROJECT_HEADERS
     inc/areawidget.h
     inc/drawwidget.h
     inc/graphdisplay.h
+    inc/sankeydiagram.h
 )
 
 set(PROJECT_UI
