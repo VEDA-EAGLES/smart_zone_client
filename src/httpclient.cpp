@@ -50,6 +50,7 @@ QJsonObject HttpClient::parseJson(QNetworkReply* reply)
 
 void HttpClient::getAllCamera()
 {
+    qDebug() << "네트워크 요청 : 모든 카메라 정보 가져오기";
     QNetworkRequest request;
     request.setUrl(QUrl(tr(SERVER_URL) + tr("/device/all")));
     getAllCameraManager->get(request);
@@ -57,6 +58,7 @@ void HttpClient::getAllCamera()
 
 void HttpClient::getAllPeopleCountData(Camera& camera)
 {
+    qDebug() << "네트워크 요청 : 모든 사람 수 데이터 가져오기";
     QNetworkRequest request;
     request.setUrl(QUrl(tr(SERVER_URL) + tr("/peoplecnt/all?camera_id=%1").arg(camera.id)));
     getAllPeopleCountDataManager->get(request);
@@ -64,6 +66,7 @@ void HttpClient::getAllPeopleCountData(Camera& camera)
 
 void HttpClient::getPeopleCountDataByTime(Camera& camera, QString startTime, QString endTime)
 {
+    qDebug() << "네트워크 요청 : 시간대별 사람 수 데이터 가져오기";
     QNetworkRequest request;
     request.setUrl(QUrl(tr(SERVER_URL) + tr("/peoplecnt/unit?camera_id=%1").arg(camera.id) + "&start=" + startTime + "&end=" + endTime));
     getPeopleCountDataByTimeManager->get(request);
@@ -71,6 +74,7 @@ void HttpClient::getPeopleCountDataByTime(Camera& camera, QString startTime, QSt
 
 void HttpClient::getAllPeopleStayData(Camera& camera)
 {
+    qDebug() << "네트워크 요청 : 모든 사람 체류 시간 데이터 가져오기";
     QNetworkRequest request;
     request.setUrl(QUrl(tr(SERVER_URL) + tr("/peoplestay/all?camera_id=%1").arg(camera.id)));
     getAllPeopleStayDataManager->get(request);
@@ -78,6 +82,7 @@ void HttpClient::getAllPeopleStayData(Camera& camera)
 
 void HttpClient::getPeopleStayDataByTime(Camera& camera, QString startTime, QString endTime)
 {
+    qDebug() << "네트워크 요청 : 시간대별 사람 체류 시간 데이터 가져오기";
     QNetworkRequest request;
     request.setUrl(QUrl(tr(SERVER_URL) + tr("/peoplestay/unit?camera_id=%1").arg(camera.id) + "&start=" + startTime + "&end=" + endTime));
     getPeopleStayDataByTimeManager->get(request);
@@ -85,6 +90,7 @@ void HttpClient::getPeopleStayDataByTime(Camera& camera, QString startTime, QStr
 
 void HttpClient::getAllPeopleMoveData(Camera& camera)
 {
+    qDebug() << "네트워크 요청 : 모든 사람 이동 데이터 가져오기";
     QNetworkRequest request;
     request.setUrl(QUrl(tr(SERVER_URL) + tr("/peoplemove/all?camera_id=%1").arg(camera.id)));
     getAllPeopleMoveDataManager->get(request);
@@ -92,6 +98,7 @@ void HttpClient::getAllPeopleMoveData(Camera& camera)
 
 void HttpClient::getPeopleMoveDataByTime(Camera& camera, QString startTime, QString endTime)
 {
+    qDebug() << "네트워크 요청 : 시간대별 사람 이동 데이터 가져오기";
     QNetworkRequest request;
     request.setUrl(QUrl(tr(SERVER_URL) + tr("/peoplemove/unit?camera_id=%1").arg(camera.id) + "&start=" + startTime + "&end=" + endTime));
     getPeopleMoveDataByTimeManager->get(request);
@@ -99,6 +106,7 @@ void HttpClient::getPeopleMoveDataByTime(Camera& camera, QString startTime, QStr
 
 void HttpClient::insertArea(Camera& camera, Area& area)
 {
+    qDebug() << "네트워크 요청 : 영역 추가";
     QNetworkRequest request;
     request.setUrl(QUrl(SERVER_URL "/area/insert"));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -116,6 +124,7 @@ void HttpClient::insertArea(Camera& camera, Area& area)
 
 void HttpClient::deleteAreaAll(Camera& camera)
 {
+    qDebug() << "네트워크 요청 : 모든 영역 삭제";
     QNetworkRequest request;
     request.setUrl(QUrl(tr(SERVER_URL) + tr("/area/all?camera_id=%1").arg(camera.id)));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -124,6 +133,7 @@ void HttpClient::deleteAreaAll(Camera& camera)
 
 void HttpClient::deleteArea(Camera& camera, Area& area)
 {
+    qDebug() << "네트워크 요청 : 영역 삭제";
     QNetworkRequest request;
     request.setUrl(QUrl(tr(SERVER_URL) + tr("/area?camera_id=%1").arg(camera.id) + tr("&area_id=%1").arg(area.id)));
     deleteAreaManager->deleteResource(request);
@@ -131,6 +141,7 @@ void HttpClient::deleteArea(Camera& camera, Area& area)
 
 void HttpClient::onGetAllCameraFinished(QNetworkReply* reply)
 {
+    qDebug() << "모든 카메라 정보 가져오기 결과 :" << reply->error();
     if (reply->error() == QNetworkReply::NoError)
     {
         QJsonObject data = parseJson(reply);
@@ -154,6 +165,7 @@ void HttpClient::onGetAllCameraFinished(QNetworkReply* reply)
 
 void HttpClient::onGetAllPeopleCountDataFinished(QNetworkReply* reply)
 {
+    qDebug() << "모든 사람 수 데이터 가져오기 결과 :" << reply->error();
     if (reply->error() == QNetworkReply::NoError)
     {
         QJsonObject data = parseJson(reply);
@@ -179,6 +191,7 @@ void HttpClient::onGetAllPeopleCountDataFinished(QNetworkReply* reply)
 
 void HttpClient::onGetPeopleCountDataByTimeFinished(QNetworkReply* reply)
 {
+    qDebug() << "시간대별 사람 수 데이터 가져오기 결과 :" << reply->error();
     if (reply->error() == QNetworkReply::NoError)
     {
         QJsonObject data = parseJson(reply);
@@ -204,6 +217,7 @@ void HttpClient::onGetPeopleCountDataByTimeFinished(QNetworkReply* reply)
 
 void HttpClient::onGetAllPeopleStayDataFinished(QNetworkReply* reply)
 {
+    qDebug() << "모든 사람 체류 시간 데이터 가져오기 결과 :" << reply->error();
     if (reply->error() == QNetworkReply::NoError)
     {
         QJsonObject data = parseJson(reply);
@@ -229,6 +243,7 @@ void HttpClient::onGetAllPeopleStayDataFinished(QNetworkReply* reply)
 
 void HttpClient::onGetPeopleStayDataByTimeFinished(QNetworkReply* reply)
 {
+    qDebug() << "시간대별 사람 체류 시간 데이터 가져오기 결과 :" << reply->error();
     if (reply->error() == QNetworkReply::NoError)
     {
         QJsonObject data = parseJson(reply);
@@ -254,6 +269,7 @@ void HttpClient::onGetPeopleStayDataByTimeFinished(QNetworkReply* reply)
 
 void HttpClient::onGetAllPeopleMoveDataFinished(QNetworkReply* reply)
 {
+    qDebug() << "모든 사람 이동 데이터 가져오기 결과 :" << reply->error();
     if (reply->error() == QNetworkReply::NoError)
     {
         QJsonObject data = parseJson(reply);
@@ -280,6 +296,7 @@ void HttpClient::onGetAllPeopleMoveDataFinished(QNetworkReply* reply)
 
 void HttpClient::onGetPeopleMoveDataByTimeFinished(QNetworkReply* reply)
 {
+    qDebug() << "시간대별 사람 이동 데이터 가져오기 결과 :" << reply->error();
     if (reply->error() == QNetworkReply::NoError)
     {
         QJsonObject data = parseJson(reply);
@@ -306,18 +323,21 @@ void HttpClient::onGetPeopleMoveDataByTimeFinished(QNetworkReply* reply)
 
 void HttpClient::onInsertAreaFinished(QNetworkReply* reply)
 {
+    qDebug() << "영역 추가 결과 :" << reply->error();
     emit areaInserted();
     reply->deleteLater();
 }
 
 void HttpClient::onDeleteAreaAllFinished(QNetworkReply* reply)
 {
+    qDebug() << "모든 영역 삭제 결과 :" << reply->error();
     emit areaAllDeleted();
     reply->deleteLater();
 }
 
 void HttpClient::onDeleteAreaFinished(QNetworkReply* reply)
 {
+    qDebug() << "영역 삭제 결과 :" << reply->error();
     emit areaDeleted();
     reply->deleteLater();
 }

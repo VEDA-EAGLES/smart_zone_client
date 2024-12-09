@@ -9,7 +9,7 @@
 #include "data.h"
 
 #define HTTPCLIENT HttpClient::getInstance()
-#define SERVER_URL "http://192.168.0.95:8080"
+#define SERVER_URL "http://192.168.0.90:8080"
 
 class HttpClient : public QObject
 {
