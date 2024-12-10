@@ -35,9 +35,10 @@ private:
     void initConnect();
 
     void clearChart();
+    void clearAreaButtons();
     QChart* createPeopleCountChart();
     QChart* createPeopleStayChart();
-    SankeyDiagram* createPeopleMoveChart();
+    SankeyDiagram* createPeopleMoveChart(int targetAreaId);
 
 public slots:
     void setCamera(Camera& camera);

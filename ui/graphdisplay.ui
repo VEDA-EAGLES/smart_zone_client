@@ -133,6 +133,9 @@
         </property>
        </spacer>
       </item>
+      <item>
+       <layout class="QHBoxLayout" name="areaButtonLayout"/>
+      </item>
      </layout>
     </widget>
    </item>

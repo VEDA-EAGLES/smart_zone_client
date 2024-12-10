@@ -8,6 +8,7 @@
 #include <QBoxPlotSeries>
 #include <QValueAxis>
 #include <QCategoryAxis>
+#include <QPushButton>
 
 #include <QRandomGenerator>
 
@@ -52,6 +53,7 @@ void GraphDisplay::initConnect()
             return;
         }
         clearChart();
+        clearAreaButtons();
         ui->peoplecountButton->setChecked(true);
         ui->peoplestayButton->setChecked(false);
         ui->peoplemoveButton->setChecked(false);
@@ -67,6 +69,7 @@ void GraphDisplay::initConnect()
             return;
         }
         clearChart();
+        clearAreaButtons();
         ui->peoplestayButton->setChecked(true);
         ui->peoplecountButton->setChecked(false);
         ui->peoplemoveButton->setChecked(false);
@@ -81,10 +84,18 @@ void GraphDisplay::initConnect()
             return;
         }
         clearChart();
+        clearAreaButtons();
+        for (auto& area : areas) {
+            QPushButton* button = new QPushButton(area.name);
+            connect(button, &QPushButton::clicked, this, [=]() {
+                clearChart();
+                ui->chartWidget->layout()->addWidget(createPeopleMoveChart(area.id));
+            });
+            ui->areaButtonLayout->addWidget(button);
+        }
         ui->peoplemoveButton->setChecked(true);
         ui->peoplecountButton->setChecked(false);
         ui->peoplestayButton->setChecked(false);
-        ui->chartWidget->layout()->addWidget(createPeopleMoveChart());
     });
 }
 
@@ -94,6 +105,16 @@ void GraphDisplay::clearChart()
     while ((item = ui->chartWidget->layout()->takeAt(0)) != nullptr) {
         item->widget()->hide();
         ui->chartWidget->layout()->removeItem(item);
+    }
+    update();
+}
+
+void GraphDisplay::clearAreaButtons()
+{
+    QLayoutItem* item;
+    while ((item = ui->areaButtonLayout->takeAt(0)) != nullptr) {
+        item->widget()->hide();
+        ui->areaButtonLayout->removeItem(item);
     }
     update();
 }
@@ -291,9 +312,11 @@ QChart* GraphDisplay::createPeopleStayChart()
     return chart;
 }
 
-SankeyDiagram* GraphDisplay::createPeopleMoveChart()
+SankeyDiagram* GraphDisplay::createPeopleMoveChart(int targetAreaId)
 {
     SankeyDiagram* sankeyDiagram = new SankeyDiagram();
+
+    // dummy data
     sankeyDiagram->addNode("Source A", 40.0, QColor(200, 100, 100), 0);
     sankeyDiagram->addNode("Source B", 20.0, QColor(100, 200, 100), 0);
     sankeyDiagram->addNode("Target 1", 25.0, QColor(100, 100, 200), 1);
@@ -312,8 +335,46 @@ SankeyDiagram* GraphDisplay::createPeopleMoveChart()
     sankeyDiagram->addLink("Target 1", "지훈", 40);
     
     sankeyDiagram->drawDiagram();
+    // -------------------------
+    
+    QList<PeopleMove> targetPeopleMoves;
+    for (auto& peopleMove : peopleMoves) {
+        if (peopleMove.toAreaId == targetAreaId || peopleMove.fromAreaId == targetAreaId) {
+            targetPeopleMoves.append(peopleMove);
+        }
+    }
+    
+    QMap<int, int> valueFromAreaToTarget, valueFromTargetToArea;
+    int targetAreaValue = 0;
+    for (auto& peopleMove : targetPeopleMoves) {
+        targetAreaValue += peopleMove.count;
+        if (peopleMove.toAreaId == targetAreaId) {
+            valueFromAreaToTarget[peopleMove.fromAreaId] += peopleMove.count;
+        } else {
+            valueFromTargetToArea[peopleMove.toAreaId] += peopleMove.count;
+        }
+    }
+    targetAreaValue /= 2;
+    
+    // add nodes
+    for (auto& fromArea : valueFromAreaToTarget.keys()) {
+        sankeyDiagram->addNode(tr("from %1").arg(areas[fromArea].name), valueFromAreaToTarget[fromArea], areas[fromArea].color, 0);
+    }
+    sankeyDiagram->addNode(tr("%1").arg(areas[targetAreaId].name), targetAreaValue, areas[targetAreaId].color, 1);
+    for (auto& toArea : valueFromTargetToArea.keys()) {
+        sankeyDiagram->addNode(tr("to %1").arg(areas[toArea].name), valueFromTargetToArea[toArea], areas[toArea].color, 2);
+    }
 
+    // add links
+    for (auto& fromArea : valueFromAreaToTarget.keys()) {
+        sankeyDiagram->addLink(tr("from %1").arg(areas[fromArea].name), tr("%1").arg(areas[targetAreaId].name), valueFromAreaToTarget[fromArea]);
+    }
+    for (auto& toArea : valueFromTargetToArea.keys()) {
+        sankeyDiagram->addLink(tr("%1").arg(areas[targetAreaId].name), tr("to %1").arg(areas[toArea].name), valueFromTargetToArea[toArea]);
+    }
 
+    sankeyDiagram->drawDiagram();
+    
     return sankeyDiagram;
 }
 
