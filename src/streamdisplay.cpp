@@ -36,13 +36,13 @@ StreamDisplay::StreamDisplay(QWidget *parent)
     connect(ui->stopStreamButton, &QPushButton::clicked, this, &StreamDisplay::stopStream);
     connect(player, &QMediaPlayer::errorOccurred, this, [=](QMediaPlayer::Error error) {
         qDebug() << "Error occurred: " << error;
-        stopStream();
     });
-    connect(player, &QMediaPlayer::mediaStatusChanged, this, [=](QMediaPlayer::MediaStatus status) {
-        if (status == QMediaPlayer::EndOfMedia | status == QMediaPlayer::InvalidMedia) {
-            stopStream();
+    connect(player, &QMediaPlayer::playingChanged, this, [=](bool playing) {
+        if (!playing) {
+            return;
         }
-
+        this->playing = playing;
+        updateStatus();
     });
     updateStatus();
 }
@@ -65,14 +65,12 @@ void StreamDisplay::playStream(QString uri)
 {
     player->setSource(QUrl(uri));
     player->play();
-    playing = true;
-    updateStatus();
 }
 
 void StreamDisplay::playStream(Camera* camera)
 {
     this->camera = camera;
-    playStream(tr("rtsp://%1:8082/test").arg(camera->ip));
+    playStream(tr("rtsp://%1:8554/test").arg(camera->ip));
 }
 
 void StreamDisplay::stopStream()
