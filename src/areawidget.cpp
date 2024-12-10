@@ -106,6 +106,15 @@ void AreaWidget::initConnect() {
         ui->saveButton->setEnabled(true);
         ui->backButton->setEnabled(true);
     });
+    connect(HTTPCLIENT, &HttpClient::areaInsertFailed, this, [=]() {
+        // alert error
+        QMessageBox msg;
+        msg.setText("영역 추가에 실패했습니다.");
+        msg.exec();
+        
+        ui->saveButton->setEnabled(true);
+        ui->backButton->setEnabled(true);
+    });
 }
 
 void AreaWidget::clearWidget()
