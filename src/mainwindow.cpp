@@ -15,14 +15,18 @@ MainWindow::MainWindow(QWidget *parent)
 {
     init();
 
-    for (int i = 0; i < 10; i++) {
-        ui->listWidget->addItem(tr("Camera %1").arg(i + 1));
-        Camera camera;
-        camera.name = tr("Camera %1").arg(i + 1);
-        camera.ip = "192.168.0.1";
-        camera.id = 1;
-        cameras.append(camera);
-    }
+    ui->listWidget->addItem("jongheon");
+    Camera camera;
+    camera.name = "jongheon";
+    camera.ip = "192.168.0.107";
+    camera.id = 1;
+    cameras.append(camera);
+
+    ui->listWidget->addItem("seongmin");
+    camera.name = "seongmin";
+    camera.ip = "192.168.0.117";
+    camera.id = 2;
+    cameras.append(camera);
 }
 
 MainWindow::~MainWindow()
@@ -66,10 +70,6 @@ void MainWindow::initStreamDisplay()
                 ui->stackedWidget->setCurrentIndex(1);
                 ui->headWidget->hide();
             });
-            
-            // streamDisplay->playStream(tr("rtsp://210.99.70.120:1935/live/cctv00%1.stream").arg(i * 2 + j + 1));
-            streamDisplay->playStream(tr("C:/Users/sm136/Downloads/test2.mp4"));
-            // streamDisplay->playStream(tr("rtsp://192.168.0.107:8082/test"));
         }
     }
     ui->gridLayout->setColumnStretch(0, 1);
@@ -118,6 +118,19 @@ void MainWindow::initConnect()
         for (auto& camera : cameras) {
             if (camera.name == item->text()) {
                 graphDisplay->setCamera(camera);
+                break;
+            }
+        }
+    });
+    connect(ui->startStreamButton, &QPushButton::clicked, this, [=]() {
+        if (!focusedDisplay) {
+            qDebug() << "No focused display";
+            return;
+        }
+        QListWidgetItem* item = ui->listWidget->currentItem();
+        for (auto& camera : cameras) {
+            if (camera.name == item->text()) {
+                focusedDisplay->playStream(&camera);
                 break;
             }
         }
