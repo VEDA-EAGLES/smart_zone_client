@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include "data.h"
+#include "area.h"
 #include "camera.h"
 #include "sankeydiagram.h"
 
@@ -25,6 +26,7 @@ public:
 private:
     Ui::GraphDisplay* ui;
     Camera camera;
+    QMap<int, Area> areas;
     QList<PeopleCount> peopleCounts;
     QList<PeopleStay> peopleStays;
     QList<PeopleMove> peopleMoves;

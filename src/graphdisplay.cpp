@@ -40,6 +40,11 @@ void GraphDisplay::initConnect()
     connect(HTTPCLIENT, &HttpClient::allPeopleMoveDataFetched, this, [=](QList<PeopleMove> peopleMoveData) {
         peopleMoves = peopleMoveData;
     });
+    connect(HTTPCLIENT, &HttpClient::allAreaByCameraFetched, this, [=](QList<Area> areaData) {
+        for (const auto& area : areaData) {
+            areas[area.id] = area;
+        }
+    });
 
     connect(ui->peoplecountButton, &QPushButton::clicked, this, [=]() {
         if (camera.name.isEmpty()) {
@@ -98,7 +103,7 @@ QChart* GraphDisplay::createPeopleCountChart()
     // dummy data
     QList<PeopleCount> dataList;
     qint64 startTime = QDateTime::currentSecsSinceEpoch(); // 현재 시간 기준 시작 시간
-    int areaCount = 1;
+    int areaCount = 5;
     int dataCountPerArea = 100;
     for (int areaId = 1; areaId <= areaCount; ++areaId) {
         for (int i = 0; i < dataCountPerArea; ++i) {
@@ -148,7 +153,7 @@ QChart* GraphDisplay::createPeopleCountChart()
         int areaId = areaPeopleCnts[0].areaId;
         if (!areaSeriesMap.contains(areaId)) {
             QLineSeries* series = new QLineSeries();
-            series->setName(tr("영역 %1").arg(areaId));
+            series->setName(tr("%1").arg(areas[areaId].name));
             areaSeriesMap[areaId] = series;
         }
 
@@ -160,7 +165,7 @@ QChart* GraphDisplay::createPeopleCountChart()
         }
     }
 
-    int numSegments = 40;
+    int numSegments = 30;
     qint64 interval = (maxTime - minTime) / numSegments;
     for (auto& areaPeopleCnts : areaPeopleCounts) {
         int areaId = areaPeopleCnts[0].areaId;
@@ -214,7 +219,7 @@ QChart* GraphDisplay::createPeopleStayChart()
     // dummy data
     QList<PeopleStay> dataList;
     int areaCount = 5;
-    int dataCountPerArea = 10;
+    int dataCountPerArea = 20;
     for (int areaId = 1; areaId <= areaCount; ++areaId) {
         for (int i = 0; i < dataCountPerArea; ++i) {
             PeopleStay entry;
@@ -261,15 +266,12 @@ QChart* GraphDisplay::createPeopleStayChart()
 
 
         QBoxSet* boxSet = new QBoxSet();
-        boxSet->setLabel(tr("영역 %1").arg(areaId));
+        boxSet->setLabel(tr("%1").arg(areas[areaId].name));
         boxSet->setValue(QBoxSet::LowerExtreme, minStayTime);
         boxSet->setValue(QBoxSet::LowerQuartile, lowerQuartileStayTime);
         boxSet->setValue(QBoxSet::Median, medianStayTime);
         boxSet->setValue(QBoxSet::UpperQuartile, upperQuartileStayTime);
         boxSet->setValue(QBoxSet::UpperExtreme, maxStayTime);
-        for (auto stayTime : areaStayTime) {
-            boxSet->append((qreal)stayTime);
-        }
         series->append(boxSet);
 
         minStay = qMin(minStay, minStayTime);
@@ -281,9 +283,10 @@ QChart* GraphDisplay::createPeopleStayChart()
     chart->addSeries(series);
     chart->createDefaultAxes();
     chart->axisX()->setTitleText("영역");
-    chart->axisY()->setMax(100);
-    chart->axisY()->setMin(0);
+    chart->axisY()->setMax(maxStay + paddingStayTime);
+    chart->axisY()->setMin(minStay - paddingStayTime);
     chart->axisY()->setTitleText("체류 시간(초)");
+    chart->legend()->setVisible(false);
 
     return chart;
 }
@@ -339,4 +342,5 @@ void GraphDisplay::getData()
     HTTPCLIENT->getAllPeopleCountData(camera);
     HTTPCLIENT->getAllPeopleStayData(camera);
     HTTPCLIENT->getAllPeopleMoveData(camera);
+    HTTPCLIENT->getAllAreaByCamera(camera);
 }
