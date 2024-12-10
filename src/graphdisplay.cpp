@@ -28,6 +28,7 @@ void GraphDisplay::init()
 {
     ui->setupUi(this);
     initConnect();
+    ui->durationWidget->hide();
 }
 
 void GraphDisplay::initConnect()
@@ -42,6 +43,7 @@ void GraphDisplay::initConnect()
         peopleMoves = peopleMoveData;
     });
     connect(HTTPCLIENT, &HttpClient::allAreaByCameraFetched, this, [=](QList<Area> areaData) {
+        areas.clear();
         for (const auto& area : areaData) {
             areas[area.id] = area;
         }
@@ -336,7 +338,7 @@ SankeyDiagram* GraphDisplay::createPeopleMoveChart(int targetAreaId)
     
     sankeyDiagram->drawDiagram();
     // -------------------------
-    
+
     QList<PeopleMove> targetPeopleMoves;
     for (auto& peopleMove : peopleMoves) {
         if (peopleMove.toAreaId == targetAreaId || peopleMove.fromAreaId == targetAreaId) {
