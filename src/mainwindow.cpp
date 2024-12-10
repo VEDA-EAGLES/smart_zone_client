@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
     camera.ip = "192.168.0.117";
     camera.id = 2;
     cameras.append(camera);
+
+    HTTPCLIENT->getAllCamera();
 }
 
 MainWindow::~MainWindow()
@@ -133,6 +135,13 @@ void MainWindow::initConnect()
                 focusedDisplay->playStream(&camera);
                 break;
             }
+        }
+    });
+    connect(HTTPCLIENT, &HttpClient::allCameraFetched, this, [=](QList<Camera> cameras) {
+        this->cameras = cameras;
+        ui->listWidget->clear();
+        for (const auto& camera : cameras) {
+            ui->listWidget->addItem(camera.name);
         }
     });
 }
