@@ -12,7 +12,7 @@
 #include <QPushButton>
 #include <QFont>
 
-#include <QRandomGenerator>
+#include <QTimer>
 
 GraphDisplay::GraphDisplay(QWidget* parent)
     : QWidget(parent)
@@ -56,6 +56,7 @@ void GraphDisplay::initConnect()
             ui->peoplecountButton->setChecked(false);
             return;
         }
+        getPeopleCountData();
         clearChart();
         clearAreaButtons();
         ui->peoplecountButton->setChecked(true);
@@ -64,7 +65,9 @@ void GraphDisplay::initConnect()
         QChartView* chartView = new QChartView(this);
         chartView->setRenderHint(QPainter::Antialiasing);
         ui->chartWidget->layout()->addWidget(chartView);
-        chartView->setChart(createPeopleCountChart());
+        QTimer::singleShot(100, this, [=]() {
+            chartView->setChart(createPeopleCountChart());
+        });
     });
 
     connect(ui->peoplestayButton, &QPushButton::clicked, this, [=]() {
@@ -72,6 +75,7 @@ void GraphDisplay::initConnect()
             ui->peoplestayButton->setChecked(false);
             return;
         }
+        getPeopleStayData();
         clearChart();
         clearAreaButtons();
         ui->peoplestayButton->setChecked(true);
@@ -79,7 +83,9 @@ void GraphDisplay::initConnect()
         ui->peoplemoveButton->setChecked(false);
         QChartView* chartView = new QChartView(this);
         ui->chartWidget->layout()->addWidget(chartView);
-        chartView->setChart(createPeopleStayChart());
+        QTimer::singleShot(100, this, [=]() {
+            chartView->setChart(createPeopleStayChart());
+        });
     });
 
     connect(ui->peoplemoveButton, &QPushButton::clicked, this, [=]() {
@@ -87,19 +93,23 @@ void GraphDisplay::initConnect()
             ui->peoplemoveButton->setChecked(false);
             return;
         }
+        getPeopleMoveData();
+        getAreaData();
         clearChart();
         clearAreaButtons();
-        for (auto& area : areas) {
-            QPushButton* button = new QPushButton(area.name);
-            connect(button, &QPushButton::clicked, this, [=]() {
-                clearChart();
-                ui->chartWidget->layout()->addWidget(createPeopleMoveChart(area.id));
-            });
-            ui->areaButtonLayout->addWidget(button);
-        }
         ui->peoplemoveButton->setChecked(true);
         ui->peoplecountButton->setChecked(false);
         ui->peoplestayButton->setChecked(false);
+        QTimer::singleShot(100, this, [=]() {
+            for (auto& area : areas) {
+                QPushButton* button = new QPushButton(area.name);
+                connect(button, &QPushButton::clicked, this, [=]() {
+                    clearChart();
+                    ui->chartWidget->layout()->addWidget(createPeopleMoveChart(area.id));
+                });
+                ui->areaButtonLayout->addWidget(button);
+            }
+        });
     });
 }
 
@@ -411,6 +421,42 @@ SankeyDiagram* GraphDisplay::createPeopleMoveChart(int targetAreaId)
     return sankeyDiagram;
 }
 
+void GraphDisplay::getPeopleCountData()
+{
+    if (camera.name.isEmpty()) {
+        qDebug() << "camera is not set";
+        return;
+    }
+    HTTPCLIENT->getAllPeopleCountData(camera);
+}
+
+void GraphDisplay::getPeopleStayData()
+{
+    if (camera.name.isEmpty()) {
+        qDebug() << "camera is not set";
+        return;
+    }
+    HTTPCLIENT->getAllPeopleStayData(camera);
+}
+
+void GraphDisplay::getPeopleMoveData()
+{
+    if (camera.name.isEmpty()) {
+        qDebug() << "camera is not set";
+        return;
+    }
+    HTTPCLIENT->getAllPeopleMoveData(camera);
+}
+
+void GraphDisplay::getAreaData()
+{
+    if (camera.name.isEmpty()) {
+        qDebug() << "camera is not set";
+        return;
+    }
+    HTTPCLIENT->getAllAreaByCamera(camera);
+}
+
 // slots
 void GraphDisplay::setCamera(Camera& camera)
 {
@@ -429,12 +475,8 @@ void GraphDisplay::setCamera(Camera& camera)
 
 void GraphDisplay::getData()
 {
-    if (camera.name.isEmpty()) {
-        qDebug() << "camera is not set";
-        return;
-    }
-    HTTPCLIENT->getAllPeopleCountData(camera);
-    HTTPCLIENT->getAllPeopleStayData(camera);
-    HTTPCLIENT->getAllPeopleMoveData(camera);
-    HTTPCLIENT->getAllAreaByCamera(camera);
+    getPeopleCountData();
+    getPeopleStayData();
+    getPeopleMoveData();
+    getAreaData();
 }
