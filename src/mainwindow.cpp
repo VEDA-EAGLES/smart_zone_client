@@ -7,7 +7,7 @@
 #include "httpclient.h"
 
 #include <QGridLayout>
-
+#include <QListWidgetItem>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -15,14 +15,18 @@ MainWindow::MainWindow(QWidget *parent)
 {
     init();
 
-    ui->listWidget->addItem("jongheon");
+    QListWidgetItem* item = new QListWidgetItem("jongheon", ui->listWidget);
+    item->setTextAlignment(Qt::AlignCenter);
+    ui->listWidget->addItem(item);
     Camera camera;
     camera.name = "jongheon";
     camera.ip = "192.168.0.107";
     camera.id = 1;
     cameras.append(camera);
 
-    ui->listWidget->addItem("seongmin");
+    item = new QListWidgetItem("seongmin", ui->listWidget);
+    item->setTextAlignment(Qt::AlignCenter);
+    ui->listWidget->addItem(item);
     camera.name = "seongmin";
     camera.ip = "192.168.0.117";
     camera.id = 2;
@@ -110,11 +114,13 @@ void MainWindow::initConnect()
         ui->headWidget->show();
         ui->deviceButton->setChecked(true);
         ui->graphButton->setChecked(false);
+        graphDisplay->clear();
     });
     connect(ui->graphButton, &QPushButton::clicked, this, [=]() {
         ui->stackedWidget_2->setCurrentIndex(1);
         ui->graphButton->setChecked(true);
         ui->deviceButton->setChecked(false);
+        graphDisplay->clear();
     });
     connect(ui->listWidget, &QListWidget::itemClicked, this, [=](QListWidgetItem* item) {
         for (auto& camera : cameras) {
@@ -143,6 +149,8 @@ void MainWindow::initConnect()
         qDebug() << cameras.size();
         for (const auto& camera : cameras) {
             qDebug() << camera.name << camera.ip;
+            QListWidgetItem* item = new QListWidgetItem(camera.name, ui->listWidget);
+            item->setTextAlignment(Qt::AlignCenter);
             ui->listWidget->addItem(camera.name);
         }
     });
