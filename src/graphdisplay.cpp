@@ -222,7 +222,7 @@ QChart* GraphDisplay::createPeopleCountChart()
         axisX->append(label, time);
     }
     qint64 paddingTime = (maxTime - minTime) * 0.05;
-    int paddingPeopleCount = (maxPeopleCount - minPeopleCount) * 0.1;
+    qreal paddingPeopleCount = (maxPeopleCount - minPeopleCount) * 0.1;
     QFont labelfont;
     labelfont.setPixelSize(20);
     axisX->setMin(minTime - paddingTime);
@@ -328,7 +328,9 @@ QChart* GraphDisplay::createPeopleStayChart()
 
     chart->legend()->setFont(labelfont);
     chart->axisX()->setLabelsFont(labelfont);
+    chart->axisX()->setTitleFont(font);
     chart->axisY()->setLabelsFont(labelfont);
+    chart->axisY()->setTitleFont(font);
     chart->setTitleFont(font);
 
     return chart;
