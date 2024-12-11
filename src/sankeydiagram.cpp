@@ -125,8 +125,10 @@ void SankeyDiagram::drawNodes(const QVector<QPair<qreal, qreal>>& nodePositions,
         );
 
         // Add text label
-        QGraphicsTextItem* label = m_scene->addText(m_nodes[i].name);
-        label->setPos(nodePositions[i].first + nodeWidth + 10, nodePositions[i].second + nodeHeight / 2 - 10);
+        QFont font;
+        font.setPixelSize(16);
+        QGraphicsTextItem* label = m_scene->addText(m_nodes[i].name + tr("\n") + tr("%1").arg(m_nodes[i].value), font);
+        label->setPos(nodePositions[i].first + nodeWidth + 5, nodePositions[i].second + nodeHeight / 2  - label->boundingRect().height() / 2);
     }
 }
 
@@ -185,7 +187,7 @@ void SankeyDiagram::drawLinks(const QVector<QPair<qreal, qreal>>& nodePositions,
                 QPen(linkColor, 0, Qt::SolidLine, Qt::FlatCap),
                 QBrush(linkColor)
                 );
-            linkPath->setOpacity(0.5);
+            linkPath->setOpacity(0.3);
         }
     }
 }
