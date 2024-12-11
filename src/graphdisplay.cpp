@@ -13,12 +13,37 @@
 #include <QFont>
 
 #include <QTimer>
+#include <QRandomGenerator>
 
 GraphDisplay::GraphDisplay(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::GraphDisplay)
 {
     init();
+
+    for (int i = 1; i <= 5; ++i) { // 5개의 from 영역
+        for (int j = 1; j <= 5; ++j) { // 각 영역마다 5개의 to 영역
+            if (i != j) { // 자기 자신으로의 이동은 제외
+                PeopleMove entry;
+                entry.fromAreaId = i;
+                entry.toAreaId = j;
+                entry.count = QRandomGenerator::global()->bounded(10, 40); // 1~49 랜덤 이동 수
+                peopleMoves.append(entry);
+            }
+        }
+    }
+
+    QStringList colors = {"#FF5733", "#33FF57", "#3357FF", "#F3FF33", "#FF33F3"}; // 색상 코드
+    QStringList names = {"Entrance", "Lobby", "Hallway", "Conference Room", "Cafeteria"}; // 영역 이름
+
+    for (int i = 1; i <= 5; ++i) {
+        Area area;
+        area.id = i;
+        area.name = names[i - 1];
+        area.color = colors[i - 1];
+        areas[i] = area;
+    }
+
 }
 
 GraphDisplay::~GraphDisplay()
@@ -415,7 +440,7 @@ SankeyDiagram* GraphDisplay::createPeopleMoveChart(int targetAreaId)
     for (auto& toArea : valueFromTargetToArea.keys()) {
         sankeyDiagram->addLink(tr("%1").arg(areas[targetAreaId].name), tr("to %1").arg(areas[toArea].name), valueFromTargetToArea[toArea]);
     }
-
+    sankeyDiagram->setTitle(tr("%1 - 이동").arg(areas[targetAreaId].name));
     sankeyDiagram->drawDiagram();
     
     return sankeyDiagram;
