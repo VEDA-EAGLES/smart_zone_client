@@ -505,3 +505,12 @@ void GraphDisplay::getData()
     getPeopleMoveData();
     getAreaData();
 }
+
+void GraphDisplay::clear()
+{
+    ui->peoplecountButton->setChecked(false);
+    ui->peoplestayButton->setChecked(false);
+    ui->peoplemoveButton->setChecked(false);
+    clearChart();
+    clearAreaButtons();
+}

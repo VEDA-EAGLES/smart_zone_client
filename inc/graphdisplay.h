@@ -47,6 +47,7 @@ private:
 public slots:
     void setCamera(Camera& camera);
     void getData();
+    void clear();
 };
 
 #endif // GRAPHDISPLAY_H
