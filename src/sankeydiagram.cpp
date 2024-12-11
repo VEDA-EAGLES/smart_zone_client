@@ -3,6 +3,7 @@
 #include <QBrush>
 #include <QRandomGenerator>
 #include <QDebug>
+#include <QGRaphicsTextItem>
 
 SankeyDiagram::SankeyDiagram(QWidget *parent)
     : QGraphicsView(parent),
@@ -13,6 +14,8 @@ SankeyDiagram::SankeyDiagram(QWidget *parent)
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_title = "Sankey Diagram";
+    titleHeight = 0;
 }
 
 void SankeyDiagram::setNodes(const std::vector<SankeyNode>& nodes) {
@@ -67,9 +70,14 @@ void SankeyDiagram::calculateNodePositions(QVector<QPair<qreal, qreal>>& nodePos
                        [](const auto& a, const auto& b) { return a.first < b.first; }
                        )->first;
 
-    double totalHeight = height() * 0.8;
+    double totalHeight = height() * 0.9;
     double currentY = height() * 0.1;
     double spacing = 5.0;
+
+    if (currentY < titleHeight + 25) {
+        currentY = titleHeight + 25;
+    }
+    totalHeight -= currentY;
 
     for (int layer = 0; layer <= maxLayer; ++layer) {
         // Calculate total value for nodes in this layer
@@ -107,7 +115,6 @@ void SankeyDiagram::drawNodes(const QVector<QPair<qreal, qreal>>& nodePositions,
         double nodeHeight = nodeHeights[i];
 
         // Use provided color or generate one
-        // QColor nodeColor = generateColor(i);
         QColor nodeColor = m_nodes[i].color;
 
         QGraphicsRectItem* rect = m_scene->addRect(
@@ -125,7 +132,6 @@ void SankeyDiagram::drawNodes(const QVector<QPair<qreal, qreal>>& nodePositions,
 
 void SankeyDiagram::drawLinks(const QVector<QPair<qreal, qreal>>& nodePositions, QVector<qreal>& nodeHeights) {
     double nodeWidth = 40.0;
-    double totalHeight = height() * 0.8;
     QMap<int, double> targetCurrentY;
     for (int i = 0; i < m_nodes.size(); ++i) {
         const auto& node = m_nodes[i];
@@ -172,7 +178,6 @@ void SankeyDiagram::drawLinks(const QVector<QPair<qreal, qreal>>& nodePositions,
             path.closeSubpath();
 
             // Generate a color for the link
-            // QColor linkColor = generateColor(link.sourceIndex);
             QColor linkColor = m_nodes[link.sourceIndex].color;
 
             QGraphicsPathItem* linkPath = m_scene->addPath(
@@ -185,12 +190,25 @@ void SankeyDiagram::drawLinks(const QVector<QPair<qreal, qreal>>& nodePositions,
     }
 }
 
+void SankeyDiagram::drawTitle() {
+    QFont font;
+    font.setPixelSize(28);
+    QGraphicsTextItem* titleItem = m_scene->addText(m_title, font);
+    titleItem->setPos(width() / 2 - titleItem->boundingRect().width() / 2, 15);
+    titleHeight = titleItem->boundingRect().height();
+}
+
 void SankeyDiagram::drawDiagram() {
     QVector<QPair<qreal, qreal>> nodePositions;
     QVector<qreal> nodeHeights;
     calculateNodePositions(nodePositions, nodeHeights);
     drawNodes(nodePositions, nodeHeights);
     drawLinks(nodePositions, nodeHeights);
+    drawTitle();
+}
+
+void SankeyDiagram::setTitle(const QString& title) {
+    m_title = title;
 }
 
 void SankeyDiagram::resizeEvent(QResizeEvent *event) {

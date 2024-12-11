@@ -37,6 +37,7 @@ public:
     void addNode(QString name, double value, QColor color, int layer);
     void addLink(QString source, QString target, double value);
     void drawDiagram();
+    void setTitle(const QString& title);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -45,10 +46,13 @@ private:
     QGraphicsScene *m_scene;
     std::vector<SankeyNode> m_nodes;
     std::vector<SankeyLink> m_links;
+    QString m_title;
+    int titleHeight;
 
     void calculateNodePositions(QVector<QPair<qreal, qreal>>& nodePositions,QVector<qreal>& nodeHeights);
     void drawNodes(const QVector<QPair<qreal, qreal>>& nodePositions, QVector<qreal>& nodeHeights);
     void drawLinks(const QVector<QPair<qreal, qreal>>& nodePositions, QVector<qreal>& nodeHeights);
+    void drawTitle();
 };
 
 #endif // SANKEYDIAGRAM_H
