@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>815</width>
+    <height>637</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -82,7 +82,7 @@
        <number>0</number>
       </property>
       <widget class="QWidget" name="viewPage">
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
         <property name="leftMargin">
          <number>9</number>
         </property>
@@ -128,18 +128,6 @@
               <font>
                <pointsize>14</pointsize>
               </font>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-             <property name="lineWidth">
-              <number>0</number>
-             </property>
-             <property name="itemAlignment">
-              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
