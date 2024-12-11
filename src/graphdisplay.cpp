@@ -5,6 +5,7 @@
 #include <QChartView>
 #include <QChart>
 #include <QLineSeries>
+#include <QSplineSeries>
 #include <QBoxPlotSeries>
 #include <QValueAxis>
 #include <QCategoryAxis>
@@ -158,7 +159,8 @@ QChart* GraphDisplay::createPeopleCountChart()
     axisY->setTitleText("인원 수");
 
 
-    QMap<int, QLineSeries*> areaSeriesMap;
+    // QMap<int, QLineSeries*> areaSeriesMap;
+    QMap<int, QSplineSeries*> areaSeriesMap;
     QMap<int, QList<PeopleCount>> areaPeopleCounts;
 
     for (const auto& peoplecount : peopleCounts) {
@@ -176,7 +178,7 @@ QChart* GraphDisplay::createPeopleCountChart()
     for (auto& areaPeopleCnts : areaPeopleCounts) {
         int areaId = areaPeopleCnts[0].areaId;
         if (!areaSeriesMap.contains(areaId)) {
-            QLineSeries* series = new QLineSeries();
+            QSplineSeries* series = new QSplineSeries();
             series->setName(tr("%1").arg(areas[areaId].name));
             areaSeriesMap[areaId] = series;
         }
@@ -193,6 +195,7 @@ QChart* GraphDisplay::createPeopleCountChart()
     qint64 interval = (maxTime - minTime) / numSegments;
     for (auto& areaPeopleCnts : areaPeopleCounts) {
         int areaId = areaPeopleCnts[0].areaId;
+        QSplineSeries* series = areaSeriesMap[areaId];
         for (int segment = 0; segment < numSegments; ++segment) {
             qint64 segmentStartTime = minTime + segment * interval;
             qint64 segmentEndTime = segmentStartTime + interval;
@@ -207,11 +210,16 @@ QChart* GraphDisplay::createPeopleCountChart()
             }
 
             if (count > 0) {
-                QLineSeries* series = areaSeriesMap[areaId];
                 series->append(segmentStartTime, peopleCountSum / count);
             }
         }
-
+        QColor color(areas[areaId].color);
+        color.setAlpha(179);
+        QPen pen(color);
+        pen.setWidth(3);
+        series->setPen(pen);
+        series->setPointsVisible(true);
+        series->setMarkerSize(4);
     }
 
     int tickCount = 10;
@@ -366,6 +374,7 @@ SankeyDiagram* GraphDisplay::createPeopleMoveChart(int targetAreaId)
         if (peopleMove.toAreaId == targetAreaId || peopleMove.fromAreaId == targetAreaId) {
             targetPeopleMoves.append(peopleMove);
         }
+        qDebug() << peopleMove.fromAreaId << peopleMove.toAreaId << peopleMove.count;
     }
     
     QMap<int, int> valueFromAreaToTarget, valueFromTargetToArea;
