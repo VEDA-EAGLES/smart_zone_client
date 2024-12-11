@@ -9,6 +9,7 @@
 #include <QValueAxis>
 #include <QCategoryAxis>
 #include <QPushButton>
+#include <QFont>
 
 #include <QRandomGenerator>
 
@@ -124,25 +125,25 @@ void GraphDisplay::clearAreaButtons()
 QChart* GraphDisplay::createPeopleCountChart()
 {
     // dummy data
-    QList<PeopleCount> dataList;
-    qint64 startTime = QDateTime::currentSecsSinceEpoch(); // 현재 시간 기준 시작 시간
-    int areaCount = 5;
-    int dataCountPerArea = 100;
-    for (int areaId = 1; areaId <= areaCount; ++areaId) {
-        for (int i = 0; i < dataCountPerArea; ++i) {
-            PeopleCount entry;
-            entry.id = (areaId - 1) * dataCountPerArea + i + 1; // 고유 ID
-            entry.areaId = areaId; // 영역 ID
-            entry.peopleCount = QRandomGenerator::global()->bounded(0, 100); // 0~99 랜덤 인원 수
+    // QList<PeopleCount> dataList;
+    // qint64 startTime = QDateTime::currentSecsSinceEpoch(); // 현재 시간 기준 시작 시간
+    // int areaCount = 5;
+    // int dataCountPerArea = 100;
+    // for (int areaId = 1; areaId <= areaCount; ++areaId) {
+    //     for (int i = 0; i < dataCountPerArea; ++i) {
+    //         PeopleCount entry;
+    //         entry.id = (areaId - 1) * dataCountPerArea + i + 1; // 고유 ID
+    //         entry.areaId = areaId; // 영역 ID
+    //         entry.peopleCount = QRandomGenerator::global()->bounded(0, 100); // 0~99 랜덤 인원 수
             
-            // 시간 설정
-            entry.startTime = startTime + i * 60;
-            entry.endTime = entry.startTime + 60;
+    //         // 시간 설정
+    //         entry.startTime = startTime + i * 60;
+    //         entry.endTime = entry.startTime + 60;
             
-            dataList.append(entry);
-        }
-    }
-    peopleCounts = dataList;
+    //         dataList.append(entry);
+    //     }
+    // }
+    // peopleCounts = dataList;
     // -------------------------------------------------
 
     QChart* chart = new QChart();
@@ -222,16 +223,25 @@ QChart* GraphDisplay::createPeopleCountChart()
     }
     qint64 paddingTime = (maxTime - minTime) * 0.05;
     int paddingPeopleCount = (maxPeopleCount - minPeopleCount) * 0.1;
+    QFont labelfont;
+    labelfont.setPixelSize(20);
     axisX->setMin(minTime - paddingTime);
     axisX->setMax(maxTime + paddingTime);
+    axisX->setLabelsFont(labelfont);
     axisY->setMin(minPeopleCount - paddingPeopleCount);
     axisY->setMax(maxPeopleCount + paddingPeopleCount);
+    axisY->setLabelsFont(labelfont);
 
+    QFont font;
+    font.setPixelSize(28);
     for (auto* series : areaSeriesMap) {
         chart->addSeries(series);
         chart->setAxisX(axisX, series);
         chart->setAxisY(axisY, series);
     }
+
+    chart->legend()->setFont(labelfont);
+    chart->setTitleFont(font);
 
     return chart;
 }
@@ -240,24 +250,24 @@ QChart* GraphDisplay::createPeopleStayChart()
 {
     // 데이터가 많아지면 boxset 분포가 찌부되는 현상 해결 필요
     // dummy data
-    QList<PeopleStay> dataList;
-    int areaCount = 5;
-    int dataCountPerArea = 20;
-    for (int areaId = 1; areaId <= areaCount; ++areaId) {
-        for (int i = 0; i < dataCountPerArea; ++i) {
-            PeopleStay entry;
-            entry.id = (areaId - 1) * dataCountPerArea + i + 1; // 고유 ID
-            entry.areaId = areaId; // 영역 ID
-            entry.stayTime = QRandomGenerator::global()->bounded(3, 100); // 0~99 랜덤 체류 시간
+    // QList<PeopleStay> dataList;
+    // int areaCount = 5;
+    // int dataCountPerArea = 20;
+    // for (int areaId = 1; areaId <= areaCount; ++areaId) {
+    //     for (int i = 0; i < dataCountPerArea; ++i) {
+    //         PeopleStay entry;
+    //         entry.id = (areaId - 1) * dataCountPerArea + i + 1; // 고유 ID
+    //         entry.areaId = areaId; // 영역 ID
+    //         entry.stayTime = QRandomGenerator::global()->bounded(3, 100); // 0~99 랜덤 체류 시간
             
-            // 시간 설정
-            entry.startTime = QDateTime::currentSecsSinceEpoch() + i * 60;
-            entry.endTime = entry.startTime + 60;
+    //         // 시간 설정
+    //         entry.startTime = QDateTime::currentSecsSinceEpoch() + i * 60;
+    //         entry.endTime = entry.startTime + 60;
             
-            dataList.append(entry);
-        }
-    }
-    peopleStays = dataList;
+    //         dataList.append(entry);
+    //     }
+    // }
+    // peopleStays = dataList;
 
     // ==================================================
     QChart* chart = new QChart();
@@ -295,6 +305,7 @@ QChart* GraphDisplay::createPeopleStayChart()
         boxSet->setValue(QBoxSet::Median, medianStayTime);
         boxSet->setValue(QBoxSet::UpperQuartile, upperQuartileStayTime);
         boxSet->setValue(QBoxSet::UpperExtreme, maxStayTime);
+        boxSet->setBrush(QColor(areas[areaId].color));
         series->append(boxSet);
 
         minStay = qMin(minStay, minStayTime);
@@ -310,6 +321,15 @@ QChart* GraphDisplay::createPeopleStayChart()
     chart->axisY()->setMin(minStay - paddingStayTime);
     chart->axisY()->setTitleText("체류 시간(초)");
     chart->legend()->setVisible(false);
+    QFont font;
+    QFont labelfont;
+    labelfont.setPixelSize(20);
+    font.setPixelSize(28);
+
+    chart->legend()->setFont(labelfont);
+    chart->axisX()->setLabelsFont(labelfont);
+    chart->axisY()->setLabelsFont(labelfont);
+    chart->setTitleFont(font);
 
     return chart;
 }
@@ -319,24 +339,24 @@ SankeyDiagram* GraphDisplay::createPeopleMoveChart(int targetAreaId)
     SankeyDiagram* sankeyDiagram = new SankeyDiagram();
 
     // dummy data
-    sankeyDiagram->addNode("Source A", 40.0, QColor(200, 100, 100), 0);
-    sankeyDiagram->addNode("Source B", 20.0, QColor(100, 200, 100), 0);
-    sankeyDiagram->addNode("Target 1", 25.0, QColor(100, 100, 200), 1);
-    sankeyDiagram->addNode("Target 2", 20.0, QColor(200, 200, 100), 1);
-    sankeyDiagram->addNode("Target 3", 25.0, QColor(200, 100, 200), 1);
-    sankeyDiagram->addNode("qwer", 60, QColor(100,100,100), 2);
-    sankeyDiagram->addNode("지훈", 50, QColor(200, 100, 50), 2);
+    // sankeyDiagram->addNode("Source A", 40.0, QColor(200, 100, 100), 0);
+    // sankeyDiagram->addNode("Source B", 20.0, QColor(100, 200, 100), 0);
+    // sankeyDiagram->addNode("Target 1", 25.0, QColor(100, 100, 200), 1);
+    // sankeyDiagram->addNode("Target 2", 20.0, QColor(200, 200, 100), 1);
+    // sankeyDiagram->addNode("Target 3", 25.0, QColor(200, 100, 200), 1);
+    // sankeyDiagram->addNode("qwer", 60, QColor(100,100,100), 2);
+    // sankeyDiagram->addNode("지훈", 50, QColor(200, 100, 50), 2);
 
-    sankeyDiagram->addLink("Source A", "Target 1", 20.0);
-    sankeyDiagram->addLink("Source A", "Target 2", 10.0);
-    sankeyDiagram->addLink("Source B", "Target 2", 15.0);
-    sankeyDiagram->addLink("Source B", "Target 3", 15.0);
-    sankeyDiagram->addLink("Source A", "Target 3", 5.0);
-    sankeyDiagram->addLink("Target 3", "qwer", 25.0);
-    sankeyDiagram->addLink("Target 2", "지훈", 10);
-    sankeyDiagram->addLink("Target 1", "지훈", 40);
+    // sankeyDiagram->addLink("Source A", "Target 1", 20.0);
+    // sankeyDiagram->addLink("Source A", "Target 2", 10.0);
+    // sankeyDiagram->addLink("Source B", "Target 2", 15.0);
+    // sankeyDiagram->addLink("Source B", "Target 3", 15.0);
+    // sankeyDiagram->addLink("Source A", "Target 3", 5.0);
+    // sankeyDiagram->addLink("Target 3", "qwer", 25.0);
+    // sankeyDiagram->addLink("Target 2", "지훈", 10);
+    // sankeyDiagram->addLink("Target 1", "지훈", 40);
     
-    sankeyDiagram->drawDiagram();
+    // sankeyDiagram->drawDiagram();
     // -------------------------
 
     QList<PeopleMove> targetPeopleMoves;
