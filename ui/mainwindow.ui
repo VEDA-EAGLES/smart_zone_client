@@ -13,11 +13,105 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">/*////////////////////////////////////////////////////////////////////////////////*/
+QWidget {
+    background-color: rgb(251, 251, 251);
+    font-family:  '나눔고딕', sans-serif;
+    font-size: 12px; 
+}
+
+/* 상단 헤더 스타일 */
+#headWidget {
+    background-color: rgb(238, 238, 238);
+	border-radius: 8px;
+}
+
+QPushButton {
+	background-color: rgb(212, 246, 255);	
+	border: none;
+	padding: 4px 6px;
+    min-height: 30px;
+    min-width: 80px;
+	color: black;
+	border-radius: 8px;
+	transition: all 2s ease;
+}
+
+QPushButton:hover {
+	background-color: rgb(191, 221, 229);
+}
+
+QPushButton:pressed {
+	background-color: rgb(172, 199, 206);
+}
+
+QPushButton:checked {
+	background-color: rgb(255, 221, 174);
+}
+
+QPushButton:disabled {
+	background-color: rgba(212, 246, 255, 90);
+	color: rgba(0, 0, 0, 90);
+}
+
+/* 리스트 위젯 */
+QListWidget {
+/*    background-color: rgb(251, 251, 251);*/
+    background-color: rgb(238, 238, 238);
+ /*   border: 2px solid rgb(226, 226, 226);*/
+    border-radius: 8px;
+    padding: 6px;
+}
+
+QListWidget::item {
+    padding: 6px;
+    border-bottom: 1px solid rgb(226, 226, 226);
+    min-height: 30px;
+    border-radius: 6px;
+}
+
+QListWidget::item:hover {
+    background-color: rgb(226, 226, 226);
+}
+
+QListWidget::item:selected {
+    background-color: rgb(255, 221, 174);
+	color: black;
+}
+
+/* 스크롤바 */
+QScrollBar:vertical {
+    width: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #adb5bd;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: #868e96;
+}
+
+QGraphicsView {
+	background-color: rgb(255, 255, 255);
+	border-radius: 8px;
+}
+
+/* 반응형 여백 */
+QWidget[native=&quot;true&quot;] {
+    margin: 6px;
+    padding: 4px;
+}
+
+</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
-    <string notr="true">QWidget#headWidget {
-	background-color: rgb(218, 218, 218);
-}</string>
+    <string notr="true"/>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
@@ -42,6 +136,12 @@
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item alignment="Qt::AlignRight">
@@ -126,7 +226,9 @@
             <widget class="QListWidget" name="listWidget">
              <property name="font">
               <font>
-               <pointsize>14</pointsize>
+               <family>나눔고딕</family>
+               <pointsize>-1</pointsize>
+               <hintingpreference>PreferFullHinting</hintingpreference>
               </font>
              </property>
             </widget>
@@ -193,7 +295,20 @@
            </layout>
           </widget>
           <widget class="QWidget" name="graphPage">
-           <layout class="QVBoxLayout" name="verticalLayout_4"/>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+           </layout>
           </widget>
          </widget>
         </item>
@@ -206,17 +321,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionstart">
    <property name="text">
     <string>start</string>
