@@ -120,7 +120,7 @@ void HttpClient::insertArea(Camera& camera, Area& area)
     QNetworkRequest request;
     request.setUrl(QUrl(SERVER_URL "/area/insert"));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
+    qDebug() << "area name : " << area.name << "camera id : " << camera.id << "x : " << area.x << "y : " << area.y << "width : " << area.width << "height : " << area.height;
     QJsonObject areaObject;
     areaObject["area_name"] = area.name;
     areaObject["camera_id"] = camera.id;
@@ -128,6 +128,7 @@ void HttpClient::insertArea(Camera& camera, Area& area)
     areaObject["y"] = area.y;
     areaObject["width"] = area.width;
     areaObject["height"] = area.height; 
+    areaObject["color"] = area.color;
 
     insertAreaManager.get()->post(request, QJsonDocument(areaObject).toJson());
 }
