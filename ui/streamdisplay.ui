@@ -28,11 +28,18 @@
    </property>
    <item>
     <widget class="QWidget" name="statusWidget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0,0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0,0,0">
       <item>
        <widget class="QLabel" name="cameraNameLabel">
         <property name="text">
          <string>장치 없음</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="deleteAllAreaButton">
+        <property name="text">
+         <string>전체 영역 지우기</string>
         </property>
        </widget>
       </item>

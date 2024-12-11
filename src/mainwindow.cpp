@@ -140,7 +140,9 @@ void MainWindow::initConnect()
     connect(HTTPCLIENT, &HttpClient::allCameraFetched, this, [=](QList<Camera> cameras) {
         this->cameras = cameras;
         ui->listWidget->clear();
+        qDebug() << cameras.size();
         for (const auto& camera : cameras) {
+            qDebug() << camera.name << camera.ip;
             ui->listWidget->addItem(camera.name);
         }
     });

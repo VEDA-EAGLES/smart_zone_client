@@ -1,5 +1,6 @@
 #include "ui_streamdisplay.h"
 #include "streamdisplay.h"
+#include "httpclient.h"
 
 #include <QMediaPlayer>
 #include <QUrl>
@@ -44,6 +45,9 @@ StreamDisplay::StreamDisplay(QWidget *parent)
         this->playing = playing;
         updateStatus();
     });
+    connect(ui->deleteAllAreaButton, &QPushButton::clicked, this, [=]() {
+        HTTPCLIENT->deleteAreaAll(*camera);
+    });
     updateStatus();
 }
 
@@ -69,8 +73,9 @@ void StreamDisplay::playStream(QString uri)
 
 void StreamDisplay::playStream(Camera* camera)
 {
+    stopStream();
     this->camera = camera;
-    playStream(tr("rtsp://%1:8554/test").arg(camera->ip));
+    playStream(tr("rtsp://%1:8082/test").arg(camera->ip));
 }
 
 void StreamDisplay::stopStream()
@@ -139,9 +144,11 @@ void StreamDisplay::updateStatus()
         ui->cameraNameLabel->setText((camera)?camera->name:"이름 없음");
         ui->stopStreamButton->setEnabled(true);
         ui->insertAreaButton->setEnabled(true);
+        ui->deleteAllAreaButton->setEnabled(true);
     } else {
         ui->cameraNameLabel->setText(tr("연결 안됨"));
         ui->stopStreamButton->setEnabled(false);
         ui->insertAreaButton->setEnabled(false);
+        ui->deleteAllAreaButton->setEnabled(false);
     }
 }
