@@ -18,20 +18,8 @@ Smart Zone Client는 보안 및 모니터링을 위한 실시간 비디오 캡�
 - **MultimediaWidgets**: 멀티미디어 관련 위젯을 제공합니다.
 - **Concurrent**: 멀티스레딩 및 동시 프로그래밍을 지원합니다.
 
-### OpenCV 버전
-- **OpenCV**: 4.6.0  
-  OpenCV는 비디오 처리, 객체 감지 및 추적을 위한 라이브러리입니다.
-
 ## 설치 가이드
 
 ### Step 1: Qt 설치
 Qt 6.5.3을 설치하려면 [공식 Qt 설치 가이드](https://doc.qt.io/qt-6.5/qtdoc/installation.html)를 참고하세요.  
 설치 시 필요한 Qt 모듈(Core, Widgets, Network, Charts, Multimedia, MultimediaWidgets, Concurrent)을 선택하여 설치해 주세요.
-
-### Step 2: OpenCV 설치
-OpenCV 4.6.0을 설치하려면, 사용하는 플랫폼에 맞게 아래의 지침을 따르세요:
-
-#### Ubuntu/Linux에서 설치
-```bash
-sudo apt update
-sudo apt install libopencv-dev
