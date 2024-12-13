@@ -38,16 +38,10 @@ StreamDisplay::StreamDisplay(QWidget *parent)
     connect(player, &QMediaPlayer::errorOccurred, this, [=](QMediaPlayer::Error error) {
         qDebug() << "Error occurred: " << error;
     });
-    connect(player, &QMediaPlayer::playingChanged, this, [=](bool playing) {
-        if (!playing) {
-            return;
-        }
-        this->playing = playing;
-        updateStatus();
-    });
     connect(ui->deleteAllAreaButton, &QPushButton::clicked, this, [=]() {
         HTTPCLIENT->deleteAreaAll(*camera);
     });
+    initializePlayer();
     updateStatus();
 }
 
@@ -59,31 +53,50 @@ StreamDisplay::~StreamDisplay()
 void StreamDisplay::setBorder()
 {
     if (focused) {
-        this->setStyleSheet("QWidget#graphicsView {border: 2px solid red;}");
+        this->setStyleSheet("QWidget#graphicsView {border: 2px solid rgb(255, 221, 174);}");
     } else {
-        this->setStyleSheet("QWidget#graphicsView {border: 1px solid black;}");
+        this->setStyleSheet("QWidget#graphicsView {border: 2px solid rgb(238, 238, 238);}");
     }
 }
 
 void StreamDisplay::playStream(QString uri)
 {
+    if (player) {
+        player->stop();
+        player->setSource(QUrl());
+    }
     player->setSource(QUrl(uri));
     player->play();
 }
 
 void StreamDisplay::playStream(Camera* camera)
 {
+    // 기존 스트림 완전 중지
     stopStream();
+
+    // 새로운 카메라 설정
     this->camera = camera;
-    playStream(tr("rtsp://%1:8082/test").arg(camera->ip));
+    QString rtspUrl = tr("rtsp://%1:8082/test").arg(camera->ip);
+
+    // 재연결 전략 추가
+    QTimer::singleShot(0, this, [this, rtspUrl]() {
+        // 미디어 플레이어 재설정
+        player->stop();
+        player->setSource(QUrl(rtspUrl));
+        player->play();
+    });
 }
 
 void StreamDisplay::stopStream()
 {
-    this->camera = nullptr;
-    player->stop();
-    playing = false;
-    updateStatus();
+    if (player) {
+        player->stop();
+        player->setSource(QUrl());
+        
+        this->camera = nullptr;
+        playing = false;
+        updateStatus();
+    }
 }
 
 void StreamDisplay::fitVideo()
@@ -150,5 +163,43 @@ void StreamDisplay::updateStatus()
         ui->stopStreamButton->setEnabled(false);
         ui->insertAreaButton->setEnabled(false);
         ui->deleteAllAreaButton->setEnabled(false);
+    }
+}
+
+void StreamDisplay::initializePlayer()
+{
+    if (player) {
+        // 오류 발생 시 자동 재시도 로직
+        connect(player, &QMediaPlayer::errorOccurred, this, [this](QMediaPlayer::Error error) {
+            qDebug() << "Stream Error: " << error;
+            
+            // 오류 발생 시 5초 후 재연결 시도
+            QTimer::singleShot(5000, this, [this]() {
+                if (camera) {
+                    playStream(camera);
+                }
+            });
+        });
+
+        // 네트워크 상태 모니터링 추가
+        connect(player, &QMediaPlayer::mediaStatusChanged, this, [this](QMediaPlayer::MediaStatus status) {
+            switch (status) {
+                case QMediaPlayer::EndOfMedia:
+                    qDebug() << "Stream ended, attempting to reconnect";
+                    if (camera) {
+                        playStream(camera);
+                    }
+                    break;
+                case QMediaPlayer::InvalidMedia:
+                    qDebug() << "Invalid media, check stream URL";
+                    break;
+                default:
+                    break;
+            }
+        });
+        connect(player, &QMediaPlayer::playingChanged, this, [=](bool playing) {
+            this->playing = playing;
+            updateStatus();
+        });
     }
 }

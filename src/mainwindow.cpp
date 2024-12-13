@@ -151,7 +151,6 @@ void MainWindow::initConnect()
             qDebug() << camera.name << camera.ip;
             QListWidgetItem* item = new QListWidgetItem(camera.name, ui->listWidget);
             item->setTextAlignment(Qt::AlignCenter);
-            ui->listWidget->addItem(camera.name);
         }
     });
 }

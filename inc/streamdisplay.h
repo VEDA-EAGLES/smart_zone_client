@@ -52,6 +52,7 @@ private:
     Camera* camera;
 
     void updateStatus();
+    void initializePlayer();
 };
 
 #endif // STREAMDISPLAY_H

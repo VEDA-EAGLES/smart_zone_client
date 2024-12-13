@@ -245,8 +245,11 @@ QChart* GraphDisplay::createPeopleCountChart()
             }
 
             if (count > 0) {
-                series->append(segmentStartTime, peopleCountSum / count);
+                series->append(segmentStartTime, peopleCountSum / (interval / 10));
+                minPeopleCount = qMin(minPeopleCount, peopleCountSum / (interval / 10));
+                maxPeopleCount = qMax(maxPeopleCount, peopleCountSum / (interval / 10));
             }
+            
         }
         QColor color(areas[areaId].color);
         color.setAlpha(179);
