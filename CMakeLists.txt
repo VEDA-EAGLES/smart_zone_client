@@ -9,8 +9,20 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Network)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Network Charts Multimedia MultimediaWidgets Concurrent)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network Charts Multimedia MultimediaWidgets Concurrent)
+
+# gstreamer
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GSTREAMER REQUIRED 
+    gstreamer-1.0
+    gstreamer-video-1.0
+    gstreamer-app-1.0
+)
+
+# GStreamer 설정
+include_directories(${GSTREAMER_INCLUDE_DIRS})
+link_directories(${GSTREAMER_LIBRARY_DIRS})
 
 set(CMAKE_AUTOUIC_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/ui")
 
@@ -20,14 +32,33 @@ include_directories(
 
 set(PROJECT_SOURCES
     src/mainwindow.cpp
+    src/httpclient.cpp
+    src/gststreamthread.cpp
+    src/streamdisplay.cpp
+    src/areawidget.cpp
+    src/drawwidget.cpp
+    src/graphdisplay.cpp
+    src/sankeydiagram.cpp
 )
 
 set(PROJECT_HEADERS
+    inc/area.h inc/camera.h inc/data.h
     inc/mainwindow.h
+    inc/httpclient.h
+    inc/gststreamthread.h
+    inc/streamdisplay.h
+    inc/areawidget.h
+    inc/drawwidget.h
+    inc/graphdisplay.h
+    inc/sankeydiagram.h
 )
 
 set(PROJECT_UI
     ui/mainwindow.ui
+    ui/streamdisplay.ui
+    ui/areawidget.ui
+    ui/drawwidget.ui
+    ui/graphdisplay.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -59,6 +90,11 @@ endif()
 target_link_libraries(smart_zone_client PRIVATE 
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Network
+    Qt${QT_VERSION_MAJOR}::Charts
+    Qt${QT_VERSION_MAJOR}::Multimedia
+    Qt${QT_VERSION_MAJOR}::MultimediaWidgets
+    Qt${QT_VERSION_MAJOR}::Concurrent
+    ${GSTREAMER_LIBRARIES}
 )
 
 set_target_properties(smart_zone_client PROPERTIES
