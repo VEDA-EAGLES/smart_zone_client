@@ -1,7 +1,7 @@
 # Smart Zone Client README
 
 ## 프로젝트 개요
-Smart Zone Client는 보안 및 모니터링을 위한 실시간 비디오 캡처, 객체 감지 및 추적 기능을 통합한 프로젝트입니다. 이 프로젝트는 UI 구성 요소를 위해 Qt를 사용하고, 이미지 처리 및 객체 추적을 위해 OpenCV를 활용합니다.
+Smart Zone 프로젝트는 라즈베리 파이 5와 카메라 모듈을 이용하여 실시간 모니터링 및 의미 있는 데이터를 모아 그래프로 보여 주는 프로젝트 입니다. Client는 UI를 요소를 위해 Qt 프레임워크를 사용합니다. 
 
 ## 의존성
 
@@ -23,3 +23,24 @@ Smart Zone Client는 보안 및 모니터링을 위한 실시간 비디오 캡�
 ### Step 1: Qt 설치
 Qt 6.5.3을 설치하려면 [공식 Qt 설치 가이드](https://doc.qt.io/qt-6.5/qtdoc/installation.html)를 참고하세요.  
 설치 시 필요한 Qt 모듈(Core, Widgets, Network, Charts, Multimedia, MultimediaWidgets, Concurrent)을 선택하여 설치해 주세요.
+
+## 기능
+
+### 스트리밍 
+![image](https://github.com/user-attachments/assets/68a1485d-0d83-4cda-80f2-1d95a408bd5f)
+최대 4대까지 동시 스트리밍 가능합니다.
+
+### 영역 추가
+![image](https://github.com/user-attachments/assets/3776334c-1142-49ea-8d93-bd19f68fffda)
+마우스 드래그로 객체 인식할 영역을 추가할 수 있습니다.
+
+### 통계 그래프 보기
+![image](https://github.com/user-attachments/assets/c75d5f39-7a1e-4f53-902e-264d1c93c8a0)
+영역 별 사람 수는 라인 그래프로 시간 별 변화를 알 수 있습니다.
+
+![image](https://github.com/user-attachments/assets/d61f19bf-bdf9-415e-922a-67ac4e82b0e1)
+영역 별 머문 시간은 박스 플롯으로 그래프를 그립니다. 이 그래프를 통해 영역별 머문 시간의 분포를 알 수 있습니다.
+
+![image](https://github.com/user-attachments/assets/333905a4-8d70-4ed3-b9c3-6a9e58a008be)
+영역 간 이동한 사람 수는 Sankey 다이어그램으로 그립니다. 이 다이어그램을 통해 영역간 관계를 알 수 있습니다.
+
